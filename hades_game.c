@@ -6,17 +6,18 @@
  * --- Creating and Deleting Games --- 23
  *
  * Hades_CreateGame   25
- * Hades_DestroyGame  62
+ * Hades_DestroyGame  63
  *
- * --- Game Functions --- 78
+ * --- Game Functions --- 79
  *
- * Hades_RunGame    80
+ * Hades_RunGame    81
  */
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <SDL2/SDL.h>
 #include "hades_game.h"
+#include "hades_texture.h"
 #include "hades_error.h"
 #include "hades_bool.h"
 
@@ -57,12 +58,17 @@ Hades_Game* Hades_CreateGame(const char* title, int w, int h)
     }
     SDL_SetRenderDrawColor(game->renderer, 0xff, 0xff, 0xff, 0xff);
 
+    Hades_LoadTexture(game, "hello.png"); // placeholder
+
     return game;
 }
 
 void Hades_DestroyGame(Hades_Game* game)
 {
     if (game) {
+        for (int i = 0; i < game->texture_count; i++) {
+            SDL_DestroyTexture(game->textures[i]);
+        }
         if (game->renderer) {
             SDL_DestroyRenderer(game->renderer);
         }
@@ -96,6 +102,10 @@ Hades_bool Hades_RunGame(Hades_Game* game)
 
         SDL_SetRenderDrawColor(game->renderer, 0xff, 0xff, 0xff, 0xff);
         SDL_RenderClear(game->renderer);
+
+        for (int i = 0; i < game->texture_count; i++) {
+            SDL_RenderCopy(game->renderer, game->textures[i], NULL, NULL);
+        }
 
         SDL_RenderPresent(game->renderer);
     }

@@ -4,17 +4,17 @@
 
 /* Table of Contents
  *
- * Constants    27
- * Hades_Game   31
+ * Constants    28
+ * Hades_Game   32
  *
- * --- Creating and Deleting Games --- 53
+ * --- Creating and Deleting Games --- 55
  *
- * Hades_CreateGame   55
- * Hades_DestroyGame  80
+ * Hades_CreateGame   57
+ * Hades_DestroyGame  82
  *
- * --- Game Functions --- 86
+ * --- Game Functions --- 88
  *
- * Hades_RunGame 88
+ * Hades_RunGame 90
  */
 
 #ifndef HADES_GAME_H
@@ -25,7 +25,8 @@
 #include "hades_bool.h"
 
 enum {
-    Hades_MaxTitleLength = 1000 /** Maximum buffer length for a game title */
+    Hades_MaxTitleLength = 1000, /** Maximum buffer length for a game title */
+    Hades_MaxTextureCount = 200
 };
 
 /** Defined in "hades_game.h"
@@ -47,7 +48,8 @@ typedef struct Hades_Game_ {
     SDL_Window* window;
     SDL_Renderer* renderer;
 
-    Hades_bool was_init;
+    SDL_Texture* textures[Hades_MaxTextureCount];
+    size_t texture_count;
 } Hades_Game;
 
 // --- Creating and Destroying Games ---

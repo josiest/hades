@@ -2,6 +2,14 @@
  * Get and Set error messages.
  */
 
+/* Table of Contents
+ *
+ *  Hades_GetError      20
+ *  Hades_SetGameError  27
+ *  Hades_SetErrorSDL   37
+ *  Hades_SetErrorIMG   47
+ */
+
 #ifndef HADES_ERROR_H
 #define HADES_ERROR_H
 
@@ -35,5 +43,14 @@ void Hades_SetGameError(const char*);
  * description - describe the error
  */
 void Hades_SetErrorSDL(const char*);
+
+/** Defined in hades_error.h
+ * void Hades_SetErrorIMG(const char* description);
+ *  Sets an error message that comes from an SDL_image function call
+ *
+ * Parameters
+ *  description - describes the error
+ */
+void Hades_SetErrorIMG(const char*);
 
 #endif
