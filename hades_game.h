@@ -7,14 +7,14 @@
  * Constants    27
  * Hades_Game   31
  *
- * --- Creating and Deleting Games --- 54
+ * --- Creating and Deleting Games --- 53
  *
- * Hades_CreateGame   56
- * Hades_DestroyGame  83
+ * Hades_CreateGame   55
+ * Hades_DestroyGame  80
  *
- * --- Game Functions --- 90
+ * --- Game Functions --- 86
  *
- * Hades_RunGame 92
+ * Hades_RunGame 88
  */
 
 #ifndef HADES_GAME_H
@@ -33,13 +33,12 @@ enum {
  *
  * Used to run a game
  *
- *  Members
+ *  Fields
  *
  *             char title[] - title of the game window
  *      SDL_Rect screen_dim - dimensions of the game window
  *       SDL_Window* window - points to the game window
  *   SDL_Renderer* renderer - points to the renderer
- *      Hades_bool was_init - states if game is fully initialized or not
  */
 typedef struct Hades_Game_ {
     char title[Hades_MaxTitleLength];
@@ -54,36 +53,33 @@ typedef struct Hades_Game_ {
 // --- Creating and Destroying Games ---
 
 /** Defined in "hades_game.h"
- * Hades_bool Hades_CreateGame(Hades_Game** game, const char* title,
- *                             SDL_Rect screen_dim);
+ * Hades_Game* Hades_CreateGame(const char* title, int w, int h);
  *
- * Create a new game and write it to the inner `game` pointer.
- *
- * If outer `game` pointer is null, or if inner `game` pointer isn't null, or
- * if game title is too long, or if the game fails to initialize for any
- * reason, the function will short circuit and set the relevant error message.
+ *  Create a new game.
  *
  *  Parameters
  *
- *       game - pointer to pointer to game
- *      title - title for game window
- * screen_dim - dimensions of game window
+ *   title - title for game window
+ *       w - width of the screen
+ *       h - height of the screen
  *
- *  Return value
+ *  Preconditions
+ *   title doesn't exceed max length
+ *   width and height are not negative
  *
- * true on success, false on failure
+ *  Postconditions
+ *   If game can't be initialized properly, CreateGame will return null and
+ *   set the corresponding error message.
  *
  *  Note
- *
- * Caller is responsible for using Hades_DestroyGame to safely destroy the
- * game.
+ *   Caller is responsible for using Hades_DestroyGame to safely destroy the
+ *   game.
  */
-Hades_bool Hades_CreateGame(Hades_Game**, const char*, SDL_Rect);
+Hades_Game* Hades_CreateGame(const char*, int, int);
 
 /** Defined in "hades_game.h"
  * void Hades_DestroyGame(Hades_Game* game);
- *
- * Safely destroy `game`
+ *  Safely destroy a game.
  */
 void Hades_DestroyGame(Hades_Game*);
 
@@ -91,19 +87,17 @@ void Hades_DestroyGame(Hades_Game*);
 
 /** Defined in "hades_game.h"
  * Hades_bool Hades_RunGame(Hades_Game* game);
+ *  Run a game
  *
- * Run `game`.
+ * Parameters
+ *  game - game to run
  *
- * If `game` is not fully initialized, the function will short circuit and set
- * any relevant error message.
+ * Preconditions
+ *  game has been initialized
  *
- *  Parameters
- *
- * Hades_Game* game - pointer to a game
- *
- *  Return value
- *
- * true on success, false on failure
+ * Postconditions
+ *  If game fails to run, RunGame will return false and set the corresponding
+ *  error message.
  */
 Hades_bool Hades_RunGame(Hades_Game*);
 

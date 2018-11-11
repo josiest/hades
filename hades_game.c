@@ -6,11 +6,11 @@
  * --- Creating and Deleting Games --- 23
  *
  * Hades_CreateGame   25
- * Hades_DestroyGame  80
+ * Hades_DestroyGame  62
  *
- * --- Game Functions --- 96
+ * --- Game Functions --- 78
  *
- * Hades_RunGame    98
+ * Hades_RunGame    80
  */
 
 #include <stdio.h>
@@ -22,59 +22,42 @@
 
 // --- Creating and Deleting Games ---
 
-Hades_bool Hades_CreateGame(Hades_Game** game, const char* title,
-                            SDL_Rect screen_dim)
+Hades_Game* Hades_CreateGame(const char* title, int w, int h)
 {
-    // Defensive Code
-    if (!game) {
-        Hades_SetGameError("CreateGame: Cannot write game "
-                           "to a null outer pointer");
-        return Hades_false;
-    }
-    if (*game) {
-        Hades_SetGameError("CreateGame: Cannot overwrite inner game pointer");
-        return Hades_false;
-    }
     if (SDL_Init(SDL_INIT_VIDEO)) {
         Hades_SetErrorSDL("CreateGame: SDL could not initialize");
-        return Hades_false;
+        return NULL;
     }
-
     // Create the game
 
-    *game = malloc(sizeof(Hades_Game));
-    (*game)->was_init = Hades_false;
-    (*game)->screen_dim = screen_dim;
+    Hades_Game* game = malloc(sizeof(Hades_Game));
+    game->screen_dim.x = SDL_WINDOWPOS_UNDEFINED;
+    game->screen_dim.y = SDL_WINDOWPOS_UNDEFINED;
+    game->screen_dim.w = w;
+    game->screen_dim.h = h;
 
-    strncpy((*game)->title, title, Hades_MaxTitleLength);
-    if (((*game)->title)[Hades_MaxTitleLength-1] != '\0') {
-        Hades_SetGameError("CreateGame: Game title is too long");
-        Hades_DestroyGame(*game);
-        return Hades_false;
-    }
+    strncpy(game->title, title, Hades_MaxTitleLength);
 
-    (*game)->window = NULL;
-    (*game)->window = SDL_CreateWindow(title, screen_dim.x, screen_dim.y,
-                                       screen_dim.w, screen_dim.h,
-                                       SDL_WINDOW_SHOWN);
-    if (!(*game)->window) {
+    game->window = NULL;
+    game->window = SDL_CreateWindow(title, game->screen_dim.x,
+                                    game->screen_dim.y, w, h, SDL_WINDOW_SHOWN);
+    if (!game->window) {
         Hades_SetErrorSDL("CreateGame: Window could not be created");
-        Hades_DestroyGame(*game);
-        return Hades_false;
+        Hades_DestroyGame(game);
+        return NULL;
     }
 
-    (*game)->renderer = NULL;
-    (*game)->renderer = SDL_CreateRenderer((*game)->window, -1,
-                                           SDL_RENDERER_ACCELERATED);
-    if (!(*game)->renderer) {
+    game->renderer = NULL;
+    game->renderer = SDL_CreateRenderer(game->window, -1,
+                                        SDL_RENDERER_ACCELERATED);
+    if (!game->renderer) {
         Hades_SetErrorSDL("CreateGame: Renderer could not be created");
-        Hades_DestroyGame(*game);
-        return Hades_false;
+        Hades_DestroyGame(game);
+        return NULL;
     }
-    SDL_SetRenderDrawColor((*game)->renderer, 0xff, 0xff, 0xff, 0xff);
+    SDL_SetRenderDrawColor(game->renderer, 0xff, 0xff, 0xff, 0xff);
 
-    (*game)->was_init = Hades_true;
-    return Hades_true;
+    return game;
 }
 
 void Hades_DestroyGame(Hades_Game* game)
@@ -99,10 +82,6 @@ Hades_bool Hades_RunGame(Hades_Game* game)
 {
     if (!game) {
         Hades_SetGameError("RunGame: Cannot run a null game");
-        return Hades_false;
-    }
-    if (!(game->was_init)) {
-        Hades_SetGameError("RunGame: Game is not completely initialized");
         return Hades_false;
     }
     Hades_bool has_quit = Hades_false;
