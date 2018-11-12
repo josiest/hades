@@ -3,14 +3,14 @@
 
 /* Table of Contents
  *
- * --- Creating and Deleting Games --- 23
+ * --- Creating and Deleting Games --- 24
  *
- * Hades_CreateGame   25
- * Hades_DestroyGame  63
+ * Hades_CreateGame   26
+ * Hades_DestroyGame  64
  *
- * --- Game Functions --- 79
+ * --- Game Functions --- 83
  *
- * Hades_RunGame    81
+ * Hades_RunGame    85
  */
 
 #include <stdio.h>
@@ -58,8 +58,6 @@ Hades_Game* Hades_CreateGame(const char* title, int w, int h)
     }
     SDL_SetRenderDrawColor(game->renderer, 0xff, 0xff, 0xff, 0xff);
 
-    Hades_LoadTexture(game, "hello.png"); // placeholder
-
     return game;
 }
 
@@ -90,6 +88,7 @@ Hades_bool Hades_RunGame(Hades_Game* game)
         Hades_SetGameError("RunGame: Cannot run a null game");
         return Hades_false;
     }
+    game->Start(game);
     Hades_bool has_quit = Hades_false;
     SDL_Event event;
 

@@ -3,8 +3,8 @@
 
 /* Table of Contents
  *
- *  Hades_GetTextureCount
- *  Hades_LoadTexture
+ *  Hades_GetTextureCount   17
+ *  Hades_LoadTexture       25
  */
 
 #include <SDL2/SDL.h>

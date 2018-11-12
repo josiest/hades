@@ -7,14 +7,14 @@
  * Constants    28
  * Hades_Game   32
  *
- * --- Creating and Deleting Games --- 55
+ * --- Creating and Deleting Games --- 57
  *
- * Hades_CreateGame   57
- * Hades_DestroyGame  82
+ * Hades_CreateGame   59
+ * Hades_DestroyGame  84
  *
- * --- Game Functions --- 88
+ * --- Game Functions --- 90
  *
- * Hades_RunGame 90
+ * Hades_RunGame 92
  */
 
 #ifndef HADES_GAME_H
@@ -50,6 +50,8 @@ typedef struct Hades_Game_ {
 
     SDL_Texture* textures[Hades_MaxTextureCount];
     size_t texture_count;
+
+    void (*Start)(struct Hades_Game_*);
 } Hades_Game;
 
 // --- Creating and Destroying Games ---
