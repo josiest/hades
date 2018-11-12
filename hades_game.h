@@ -20,9 +20,13 @@
 #ifndef HADES_GAME_H
 #define HADES_GAME_H
 
+// forward declarations for circular dependencies
+typedef struct Hades_Game Hades_Game;
+
 #include <SDL2/SDL.h>
 #include "hades_game.h"
 #include "hades_bool.h"
+#include "hades_sprite.h"
 
 enum {
     Hades_MaxTitleLength = 1000, /** Maximum buffer length for a game title */
@@ -41,7 +45,7 @@ enum {
  *       SDL_Window* window - points to the game window
  *   SDL_Renderer* renderer - points to the renderer
  */
-typedef struct Hades_Game_ {
+struct Hades_Game {
     char title[Hades_MaxTitleLength];
     SDL_Rect screen_dim;
 
@@ -51,8 +55,10 @@ typedef struct Hades_Game_ {
     SDL_Texture* textures[Hades_MaxTextureCount];
     size_t texture_count;
 
-    void (*Start)(struct Hades_Game_*);
-} Hades_Game;
+    Hades_Sprite_* sprite;
+
+    void (*Start)(Hades_Game*);
+};
 
 // --- Creating and Destroying Games ---
 

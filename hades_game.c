@@ -64,6 +64,7 @@ Hades_Game* Hades_CreateGame(const char* title, int w, int h)
 void Hades_DestroyGame(Hades_Game* game)
 {
     if (game) {
+        Hades_DestroyAllSprites(game);
         for (int i = 0; i < game->texture_count; i++) {
             SDL_DestroyTexture(game->textures[i]);
         }
@@ -102,10 +103,7 @@ Hades_bool Hades_RunGame(Hades_Game* game)
         SDL_SetRenderDrawColor(game->renderer, 0xff, 0xff, 0xff, 0xff);
         SDL_RenderClear(game->renderer);
 
-        for (int i = 0; i < game->texture_count; i++) {
-            SDL_RenderCopy(game->renderer, game->textures[i], NULL, NULL);
-        }
-
+        Hades_RenderSprite(game);
         SDL_RenderPresent(game->renderer);
     }
     return Hades_true;

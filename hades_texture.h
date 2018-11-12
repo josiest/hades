@@ -8,8 +8,8 @@
  *  Hades_LoadTexture        33
  */
 
-#ifndef HADES_TEXTURE_
-#define HADES_TEXTURE_
+#ifndef HADES_TEXTURE_H
+#define HADES_TEXTURE_H
 
 #include <stddef.h>
 #include "hades_game.h"
