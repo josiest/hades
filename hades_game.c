@@ -6,11 +6,11 @@
  * --- Creating and Deleting Games --- 24
  *
  * Hades_CreateGame   26
- * Hades_DestroyGame  64
+ * Hades_DestroyGame  71
  *
- * --- Game Functions --- 83
+ * --- Game Functions --- 91
  *
- * Hades_RunGame    85
+ * Hades_RunGame    93
  */
 
 #include <stdio.h>
@@ -58,13 +58,20 @@ Hades_Game* Hades_CreateGame(const char* title, int w, int h)
     }
     SDL_SetRenderDrawColor(game->renderer, 0xff, 0xff, 0xff, 0xff);
 
+    for (int i = 0; i < Hades_MaxTextureCount; i++) {
+        game->textures[i] = NULL;
+    }
+    for (int i = 0; i < Hades_MaxSpriteBuckets; i++) {
+        game->sprites[i] = NULL;
+    }
+
     return game;
 }
 
 void Hades_DestroyGame(Hades_Game* game)
 {
     if (game) {
-        Hades_DestroyAllSprites(game);
+        Hades_DestroySpriteMap(game);
         for (int i = 0; i < game->texture_count; i++) {
             SDL_DestroyTexture(game->textures[i]);
         }
@@ -103,7 +110,12 @@ Hades_bool Hades_RunGame(Hades_Game* game)
         SDL_SetRenderDrawColor(game->renderer, 0xff, 0xff, 0xff, 0xff);
         SDL_RenderClear(game->renderer);
 
-        Hades_RenderSprite(game);
+        for (int i = 0; i < Hades_MaxSpriteBuckets; i++) {
+            for (Hades_Sprite_* current = game->sprites[i]; current != NULL;
+                    current = current->next) {
+                Hades_RenderSprite(game, current);
+            }
+        }
         SDL_RenderPresent(game->renderer);
     }
     return Hades_true;

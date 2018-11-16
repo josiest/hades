@@ -4,10 +4,20 @@
 
 /* Table of Contents
  *
- * Constants
- * Hades_SpriteNode
- * Hades_CreateSprite
- * Hades_DestroyAllSprites
+ * - Public Interface -     34
+ * --------------------
+ *
+ * Hades_Sprite             38
+ * Hades_NullSprite         39
+ * Hades_CreateSprite       66
+ * Hades_DestroySprite      88
+ *
+ * - Private Interface -    101
+ * ---------------------
+ *
+ * Hades_RenderSprite       103
+ * Hades_DestroySpriteMap   119
+ * Hades_GetSprite          134
  */
 
 #ifndef HADES_SPRITE_H
@@ -15,13 +25,24 @@
 
 // forward declarations for circular dependencies
 typedef struct Hades_Sprite_ Hades_Sprite_;
+typedef struct Hades_SpriteMap Hades_SpriteMap;
 
 #include <SDL2/SDL.h>
 #include "hades_game.h"
 #include "hades_bool.h"
 
-typedef int Hades_Sprite;               /** Front-end sprite */
+// --------------------
+// - Public Interface -
+// --------------------
+
+typedef int Hades_Sprite; /** Front-end sprite */
 const Hades_Sprite Hades_NullSprite;    /** null sprite */
+
+// ---------------------
+// - Private Interface -
+// ---------------------
+
+// --- Sprite ---
 
 /** defined in "hades_sprite.h"
  * Hades_Sprite_
@@ -60,28 +81,32 @@ struct Hades_Sprite_ {
  *
  * Postconditions
  *  If src- or dst- rect are null, CreateSprite uses the default "area vector"
- *  for the specified texture.
+ *  for the specified texture. Otherwise, src- and dst- rect are copied.
  */
 Hades_Sprite Hades_CreateSprite(Hades_Game*, int, SDL_Rect*, SDL_Rect*);
 
 /** defined in "hades_sprite.h"
- * void Hades_DestroyAllSprites(Hades_Game* game);
- *  Safely destroy all sprites in the game.
+ * void Hades_DestroySprite(Hades_Game* game, Hades_Sprite* sprite);
+ *  Destroy a specific sprite
  *
  * Parameters
- *  game - the game to destroy sprites in
+ *    game - game to destroy sprite in
+ *  sprite - pointer to sprite to destroy
  *
  * Postconditions
- *  no sprites are left undestroyed
+ *  The specified sprite is completely destroyed, and the sprite is set to null
  */
-void Hades_DestroyAllSprites(Hades_Game*);
+void Hades_DestroySprite(Hades_Game*, Hades_Sprite*);
+
+// --- Private Interface ----
 
 /** defined in "hades_sprite.h"
- * void Hades_RenderSprite(Hades_Game* game);
+ * void Hades_RenderSprite(Hades_Game* game, Hades_Sprite_* sprite);
  *  Render the loaded sprite.
  *
  * Parameters
- *  game - the game to render the sprite in
+ *    game - the game to render the sprite in
+ *  sprite - pointer to the sprite to render
  *
  * Preconditions
  *  game has been initialized, texture loaded and sprite created
@@ -89,6 +114,35 @@ void Hades_DestroyAllSprites(Hades_Game*);
  * Postconditions
  *  the sprite will be rendered to the game
  */
-void Hades_RenderSprite(Hades_Game*);
+void Hades_RenderSprite(Hades_Game*, Hades_Sprite_*);
+
+/** defined in "hades_sprite.h"
+ * void Hades_DestroySpriteMap(Hades_Game* game);
+ *  Safely destroy all sprites in the game.
+ *
+ * Parameters
+ *  game - the game to destroy sprites in
+ *
+ * Precodnitions
+ *  All Sprites have been added via Hades_CreateSprite
+ *
+ * Postconditions
+ *  no sprites are left undestroyed
+ */
+void Hades_DestroySpriteMap(Hades_Game*);
+
+/** defined in "hades_sprite.h"
+ * Hades_Sprite_* Hades_GetSprite(Hades_Game* game, Hades_Sprite sprite,
+ *                                Hades_Sprite_** prev_pointer);
+ *  Retrieve the specified sprite instance.
+ *
+ * Parameters
+ *    game - the game to get the sprite from
+ *  sprite - the id of the sprite to retrieve
+ *
+ * Postconditions
+ *  If sprite doesn't exist in the game or if game doesn't exist, returns null
+ */
+Hades_Sprite_* Hades_GetSprite(Hades_Game*, Hades_Sprite, Hades_Sprite_**);
 
 #endif
