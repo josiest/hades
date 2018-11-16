@@ -86,17 +86,17 @@ struct Hades_Sprite_ {
 Hades_Sprite Hades_CreateSprite(Hades_Game*, int, SDL_Rect*, SDL_Rect*);
 
 /** defined in "hades_sprite.h"
- * void Hades_DestroySprite(Hades_Game* game, Hades_Sprite* sprite);
+ * void Hades_DestroySprite(Hades_Game* game, Hades_Sprite sprite);
  *  Destroy a specific sprite
  *
  * Parameters
  *    game - game to destroy sprite in
- *  sprite - pointer to sprite to destroy
+ *  sprite - sprite to destroy
  *
  * Postconditions
- *  The specified sprite is completely destroyed, and the sprite is set to null
+ *  The specified sprite is completely destroyed
  */
-void Hades_DestroySprite(Hades_Game*, Hades_Sprite*);
+void Hades_DestroySprite(Hades_Game*, Hades_Sprite);
 
 // --- Private Interface ----
 

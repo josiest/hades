@@ -34,7 +34,7 @@ Hades_Sprite Hades_CreateSprite(Hades_Game* game, int texture,
     Hades_Sprite_*
     spriteToAdd = (Hades_Sprite_*) malloc(sizeof(Hades_Sprite_));
 
-    spriteToAdd->id = game->sprite_count;
+    spriteToAdd->id = Hades_NextIDFromGame(game);;
     spriteToAdd->texture = texture;
     spriteToAdd->src = NULL;
     if (srcrect) {
@@ -56,10 +56,10 @@ Hades_Sprite Hades_CreateSprite(Hades_Game* game, int texture,
     return spriteToAdd->id;
 }
 
-void Hades_DestroySprite(Hades_Game* game, Hades_Sprite* id)
+void Hades_DestroySprite(Hades_Game* game, Hades_Sprite id)
 {
     Hades_Sprite_* prevSprite = NULL;
-    Hades_Sprite_* spriteToDestroy = Hades_GetSprite(game, *id, &prevSprite);
+    Hades_Sprite_* spriteToDestroy = Hades_GetSprite(game, id, &prevSprite);
     if (spriteToDestroy) {
         if (prevSprite) {
             prevSprite->next = spriteToDestroy->next;
@@ -72,7 +72,6 @@ void Hades_DestroySprite(Hades_Game* game, Hades_Sprite* id)
         }
         free(spriteToDestroy);
         game->sprite_count -= 1;
-        *id = Hades_NullSprite;
     }
 }
 

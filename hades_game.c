@@ -58,12 +58,15 @@ Hades_Game* Hades_CreateGame(const char* title, int w, int h)
     }
     SDL_SetRenderDrawColor(game->renderer, 0xff, 0xff, 0xff, 0xff);
 
+    game->texture_count = 0;
     for (int i = 0; i < Hades_MaxTextureCount; i++) {
         game->textures[i] = NULL;
     }
+    game->sprite_count = 0;
     for (int i = 0; i < Hades_MaxSpriteBuckets; i++) {
         game->sprites[i] = NULL;
     }
+    game->current_id = 0;
 
     return game;
 }
@@ -111,7 +114,8 @@ Hades_bool Hades_RunGame(Hades_Game* game)
         SDL_RenderClear(game->renderer);
 
         for (int i = 0; i < Hades_MaxSpriteBuckets; i++) {
-            for (Hades_Sprite_* current = game->sprites[i]; current != NULL;
+            for (Hades_Sprite_* current = game->sprites[i];
+                    current != NULL;
                     current = current->next) {
                 Hades_RenderSprite(game, current);
             }
@@ -119,4 +123,11 @@ Hades_bool Hades_RunGame(Hades_Game* game)
         SDL_RenderPresent(game->renderer);
     }
     return Hades_true;
+}
+
+// --- Private Interface ---
+
+size_t Hades_NextIDFromGame(Hades_Game* game)
+{
+    return (game->current_id)++;
 }

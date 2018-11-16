@@ -22,7 +22,8 @@ size_t Hades_GetTextureCount(Hades_Game* game)
     return game->texture_count;
 }
 
-Hades_bool Hades_LoadTexture(Hades_Game* game, const char* path)
+Hades_bool Hades_LoadTexture(Hades_Game* game, const char* path,
+                             Hades_Color* colorkey)
 {
     if (!game) {
         return Hades_false;
@@ -36,6 +37,11 @@ Hades_bool Hades_LoadTexture(Hades_Game* game, const char* path)
     if (loaded_surface == NULL) {
         Hades_SetErrorIMG("Could not load image");
         return Hades_false;
+    }
+    if (colorkey) {
+        SDL_SetColorKey(loaded_surface, SDL_TRUE,
+                        SDL_MapRGB(loaded_surface->format, colorkey->r,
+                                   colorkey->g, colorkey->b));
     }
 
     SDL_Texture*

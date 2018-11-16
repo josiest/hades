@@ -15,6 +15,10 @@
  * --- Game Functions --- 98
  *
  * Hades_RunGame 100
+ *
+ * --- Private Interface ---
+ * 
+ * Hades_NextIDFromGame
  */
 
 #ifndef HADES_GAME_H
@@ -58,6 +62,8 @@ struct Hades_Game {
 
     Hades_Sprite_* sprites[Hades_MaxSpriteBuckets];
     size_t sprite_count;
+
+    size_t current_id;
 
     void (*Start)(Hades_Game*);
 };
@@ -112,5 +118,18 @@ void Hades_DestroyGame(Hades_Game*);
  *  error message.
  */
 Hades_bool Hades_RunGame(Hades_Game*);
+
+/** Defined in "hades_game.h"
+ * size_t Hades_NextIDFromGame(Hades_Game* game);
+ *  Get the next id from the game
+ *
+ * Parameters
+ *  game - the game to get the id from
+ *
+ * Postconditions
+ *  The id returned is unique, and the game is updated to create a new id
+ *  the next time NextID is called
+ */
+size_t Hades_NextIDFromGame(Hades_Game*);
 
 #endif

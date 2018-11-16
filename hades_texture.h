@@ -15,8 +15,12 @@
 #include "hades_game.h"
 #include "hades_bool.h"
 
+typedef struct {
+    int r, g, b;
+} Hades_Color;
+
 /** Defined in "hades_texture.h"
- * Hades_GetTextureCount
+ * size_t Hades_GetTextureCount(Hades_Game* game);
  *  Get the amount of texture currently loaded
  *
  * Parameters
@@ -31,26 +35,32 @@
 size_t Hades_GetTextureCount(Hades_Game*);
 
 /** Defined in "hades_texture.h"
- * Hades_LoadTexture
+ * Hades_bool Hades_LoadTexture(Hades_Game* game, const char* path,
+ *                              Hades_Color* colorkey);
  *  Load a texture into a game
  *
  * Parameters
- *  game - the game to load the texture into
- *  path - the path of the image to load
+ *      game - the game to load the texture into
+ *      path - the path of the image to load
+ *  colorkey - the RGB color to set the color key to
  *
  * Preconditions
  *  game has been initialized*
  *  image in path is png
  *
  * Postconditions
- *  If successful, GetTextureCount updates texture count and returns true.
+ *  If successful, LoadTexture updates texture count and returns true.
+ *
+ *  When rendered, any parts of the texture with the same color as color key
+ *  will not be shown. If colorkey is null, the colorkey won't be set.
+ *
  *  The index used for the texture is the same as texture count before
  *  updating. The user is responsible for keeping track of what indeces
  *  correspond to what images.
  *
- *  If GetTextureCount fails, it will return false and set the corresponding
+ *  If LoadTexture fails, it will return false and set the corresponding
  *  error message.
  */
-Hades_bool Hades_LoadTexture(Hades_Game*, const char*);
+Hades_bool Hades_LoadTexture(Hades_Game*, const char*, Hades_Color*);
 
 #endif
