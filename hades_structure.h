@@ -52,6 +52,8 @@ struct Hades_Game {
     SDL_Window* window;
     SDL_Renderer* renderer;
 
+    size_t current_id;
+
     SDL_Texture* textures[Hades_MaxTextureCount];
     size_t texture_count;
 

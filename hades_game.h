@@ -29,16 +29,9 @@
 
 typedef struct Hades_Game Hades_Game;
 
-<<<<<<< HEAD
-    size_t current_id;
-
-    void (*Start)(Hades_Game*);
-};
-=======
 // ---------------------
 // - Private Interface -
 // ---------------------
->>>>>>> temp
 
 // --- Creating and Destroying Games ---
 
