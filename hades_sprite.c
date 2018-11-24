@@ -48,6 +48,7 @@ Hades_Sprite Hades_CreateSprite(Hades_Game* game, int texture,
         memcpy(spriteToAdd->dst, dstrect, sizeof(SDL_Rect));
     }
     spriteToAdd->UpdateTexture = NULL;
+    spriteToAdd->Update = NULL;
 
     // hash into map
     size_t i = game->sprite_count % Hades_MaxSpriteBuckets;
@@ -82,6 +83,20 @@ void Hades_SetUpdateTextureFunction(Hades_Game* game, Hades_Sprite sprite,
 {
     Hades_Sprite_* sprite_ = game->sprites[sprite];
     sprite_->UpdateTexture = UpdateTexture;
+}
+
+void Hades_SetSpriteUpdateFunction(Hades_Game* game, Hades_Sprite sprite,
+                                   void (*Update)(Hades_Game*, Hades_Sprite))
+{
+    Hades_Sprite_* sprite_ = game->sprites[sprite];
+    sprite_->Update = Update;
+}
+
+void Hades_MoveSprite(Hades_Game* game, Hades_Sprite sprite, int dx, int dy)
+{
+    Hades_Sprite_* sprite_ = game->sprites[sprite];
+    sprite_->dst->x += dx;
+    sprite_->dst->y += dy;
 }
 
 // --- Private Interface ---

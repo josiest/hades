@@ -10,7 +10,6 @@ enum {
 typedef struct Hades_Game Hades_Game;
 typedef struct Hades_Sprite_ Hades_Sprite_;
 typedef int Hades_Sprite; /** Front-end sprite */
-typedef void (*UpdateTextureFunction)(SDL_Texture*);
 
 const Hades_Sprite Hades_NullSprite;    /** null sprite */
 
@@ -33,7 +32,8 @@ struct Hades_Sprite_ {
     int texture;
     SDL_Rect* src, * dst;
     Hades_Sprite_* next;
-    UpdateTextureFunction UpdateTexture;
+    void (*UpdateTexture)(SDL_Texture*);
+    void (*Update)(Hades_Game*, Hades_Sprite);
 };
 
 /** Defined in "hades_structure.h"

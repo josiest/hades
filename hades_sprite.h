@@ -29,7 +29,6 @@
 typedef struct Hades_Game Hades_Game;
 typedef struct Hades_Sprite_ Hades_Sprite_;
 typedef int Hades_Sprite;
-typedef void (*UpdateTextureFunction)(SDL_Texture*);
 
 // --------------------
 // - Public Interface -
@@ -37,8 +36,7 @@ typedef void (*UpdateTextureFunction)(SDL_Texture*);
 
 /** defined in "hades_sprite.h"
  * Hades_Sprite Hades_CreateSprite(Hades_Game* game, int texture,
- *                                 SDL_Rect* srcrect, SDL_Rect* dstrect,
- *                                 UpdateTextureFunction UpdateTexture);
+ *                                 SDL_Rect* srcrect, SDL_Rect* dstrect);
  *  Create a new sprite.
  *
  * Parameters
@@ -71,7 +69,7 @@ Hades_Sprite Hades_CreateSprite(Hades_Game*, int, SDL_Rect*, SDL_Rect*);
  */
 void Hades_DestroySprite(Hades_Game*, Hades_Sprite);
 
-/** defind in "hades_sprite.h"
+/** defined in "hades_sprite.h"
  * void Hades_SetUpdateTextureFunction(Hades_Game* game, Hades_Sprite sprite,
  *                                     void (*UpdateTexture)(SDL_Texture*));
  *  Define how a specific sprite renders its texture.
@@ -82,7 +80,33 @@ void Hades_DestroySprite(Hades_Game*, Hades_Sprite);
  *   UpdateTexture - pointer to function telling sprite how to render texture
  */
 void Hades_SetUpdateTextureFunction(Hades_Game*, Hades_Sprite,
-                                    UpdateTextureFunction);
+                                    void (*UpdateTexture)(SDL_Texture*));
+
+/** defined in "hades_sprite.h"
+ * void
+ * Hades_SetSpriteUpdateFunction(Hades_Game* game, Hades_Sprite sprite,
+ *                               void (*Update)(Hades_Game*, Hades_Sprite));
+ *  Define how a specific sprite changes each frame.
+ *
+ *  Parameters
+ *     game - game that contains the sprite
+ *   sprite - sprite to set Update function for
+ *   Update - pointer to function telling sprite how to update
+ */
+void Hades_SetSpriteUpdateFunction(Hades_Game*, Hades_Sprite,
+                                   void (*)(Hades_Game*, Hades_Sprite));
+
+/** defined in "hades_sprite.h"
+ * void Hades_MoveSprite(Hades_Game* game, Hades_Sprite sprite,
+ *                       int dx, int dy);
+ *  Move a sprite by dx and dy pixels
+ *
+ *  Parameters
+ *     game - game that contains the sprite
+ *   sprite - sprite to move
+ *   dx, dy - vector to move by
+ */
+void Hades_MoveSprite(Hades_Game*, Hades_Sprite, int, int);
 
 // --- Private Interface ----
 
