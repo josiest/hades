@@ -119,7 +119,18 @@ Hades_bool Hades_RunGame(Hades_Game* game)
             for (Hades_Sprite_* current = game->sprites[i];
                     current != NULL;
                     current = current->next) {
+
+                SDL_Texture* texture = game->textures[current->texture];
+                Hades_Color old_color = {0, 0, 0};
+                SDL_GetTextureColorMod(texture, &(old_color.r), &(old_color.g),
+                                       &(old_color.b));
+
+                if (current->UpdateTexture) {
+                    current->UpdateTexture(texture);
+                }
                 Hades_RenderSprite(game, current);
+                SDL_SetTextureColorMod(texture, old_color.r, old_color.g,
+                                       old_color.b);
             }
         }
         SDL_RenderPresent(game->renderer);

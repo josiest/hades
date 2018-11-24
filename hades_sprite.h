@@ -29,6 +29,7 @@
 typedef struct Hades_Game Hades_Game;
 typedef struct Hades_Sprite_ Hades_Sprite_;
 typedef int Hades_Sprite;
+typedef void (*UpdateTextureFunction)(SDL_Texture*);
 
 // --------------------
 // - Public Interface -
@@ -36,7 +37,8 @@ typedef int Hades_Sprite;
 
 /** defined in "hades_sprite.h"
  * Hades_Sprite Hades_CreateSprite(Hades_Game* game, int texture,
- *                                 SDL_Rect* srcrect, SDL_Rect* dstrect);
+ *                                 SDL_Rect* srcrect, SDL_Rect* dstrect,
+ *                                 UpdateTextureFunction UpdateTexture);
  *  Create a new sprite.
  *
  * Parameters
@@ -68,6 +70,19 @@ Hades_Sprite Hades_CreateSprite(Hades_Game*, int, SDL_Rect*, SDL_Rect*);
  *  The specified sprite is completely destroyed
  */
 void Hades_DestroySprite(Hades_Game*, Hades_Sprite);
+
+/** defind in "hades_sprite.h"
+ * void Hades_SetUpdateTextureFunction(Hades_Game* game, Hades_Sprite sprite,
+ *                                     void (*UpdateTexture)(SDL_Texture*));
+ *  Define how a specific sprite renders its texture.
+ *
+ *  Parameters
+ *            game - game that contains sprite
+ *          sprite - sprite to set UpdateTexture function for
+ *   UpdateTexture - pointer to function telling sprite how to render texture
+ */
+void Hades_SetUpdateTextureFunction(Hades_Game*, Hades_Sprite,
+                                    UpdateTextureFunction);
 
 // --- Private Interface ----
 

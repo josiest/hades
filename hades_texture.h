@@ -12,10 +12,11 @@
 #define HADES_TEXTURE_H
 
 #include <stddef.h>
+#include <SDL2/SDL.h>
 #include "hades_bool.h"
 
 typedef struct {
-    int r, g, b;
+    Uint8 r, g, b;
 } Hades_Color;
 
 typedef struct Hades_Game Hades_Game;
