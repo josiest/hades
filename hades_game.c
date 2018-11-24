@@ -13,13 +13,15 @@
  * Hades_RunGame    93
  */
 
+#include "hades_structure.h"
+#include "hades_error.h"
+#include "hades_game.h"
+#include "hades_texture.h"
+#include "hades_sprite.h"
+#include "hades_bool.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <SDL2/SDL.h>
-#include "hades_game.h"
-#include "hades_texture.h"
-#include "hades_error.h"
-#include "hades_bool.h"
 
 // --- Creating and Deleting Games ---
 

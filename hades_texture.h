@@ -12,12 +12,15 @@
 #define HADES_TEXTURE_H
 
 #include <stddef.h>
-#include "hades_game.h"
 #include "hades_bool.h"
 
+<<<<<<< HEAD
 typedef struct {
     int r, g, b;
 } Hades_Color;
+=======
+typedef struct Hades_Game Hades_Game;
+>>>>>>> temp
 
 /** Defined in "hades_texture.h"
  * size_t Hades_GetTextureCount(Hades_Game* game);
