@@ -23,45 +23,16 @@
 #ifndef HADES_SPRITE_H
 #define HADES_SPRITE_H
 
-// forward declarations for circular dependencies
-typedef struct Hades_Sprite_ Hades_Sprite_;
-typedef struct Hades_SpriteMap Hades_SpriteMap;
-
 #include <SDL2/SDL.h>
-#include "hades_game.h"
 #include "hades_bool.h"
+
+typedef struct Hades_Game Hades_Game;
+typedef struct Hades_Sprite_ Hades_Sprite_;
+typedef int Hades_Sprite;
 
 // --------------------
 // - Public Interface -
 // --------------------
-
-typedef int Hades_Sprite; /** Front-end sprite */
-const Hades_Sprite Hades_NullSprite;    /** null sprite */
-
-// ---------------------
-// - Private Interface -
-// ---------------------
-
-// --- Sprite ---
-
-/** defined in "hades_sprite.h"
- * Hades_Sprite_
- *  used for rendering a texture
- *  back-end sprite data structure
- *
- * Fields
- *       id - used for hashing into sprite map
- *  texture - index of texture
- *      src - where on the texture to copy
- *      dst - where to render sprite
- *     next - pointer to next sprite in bucket
- */
-struct Hades_Sprite_ {
-    Hades_Sprite id;
-    int texture;
-    SDL_Rect* src, * dst;
-    struct Hades_Sprite_* next;
-};
 
 /** defined in "hades_sprite.h"
  * Hades_Sprite Hades_CreateSprite(Hades_Game* game, int texture,

@@ -12,8 +12,9 @@
 #define HADES_TEXTURE_H
 
 #include <stddef.h>
-#include "hades_game.h"
 #include "hades_bool.h"
+
+typedef struct Hades_Game Hades_Game;
 
 /** Defined in "hades_texture.h"
  * Hades_GetTextureCount

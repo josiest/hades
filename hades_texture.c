@@ -7,12 +7,13 @@
  *  Hades_LoadTexture       25
  */
 
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_image.h>
-#include "hades_game.h"
 #include "hades_texture.h"
+#include "hades_structure.h"
+#include "hades_game.h"
 #include "hades_bool.h"
 #include "hades_error.h"
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
 
 size_t Hades_GetTextureCount(Hades_Game* game)
 {

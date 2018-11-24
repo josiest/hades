@@ -18,11 +18,12 @@
  * Hades_GetSprite
  */
 
+#include "hades_structure.h"
+#include "hades_sprite.h"
+#include "hades_game.h"
 #include <stdlib.h>
 #include <string.h>
 #include <SDL2/SDL.h>
-#include "hades_sprite.h"
-#include "hades_game.h"
 
 // Public Interface
 
