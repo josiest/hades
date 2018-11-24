@@ -4,11 +4,12 @@
 enum {
     Hades_MaxTitleLength = 1000, /** Maximum buffer length for a game title */
     Hades_MaxTextureCount = 200,
-    Hades_MaxSpriteBuckets = 149
+    Hades_MaxSpriteBuckets = 149,
 };
 
 typedef struct Hades_Game Hades_Game;
 typedef struct Hades_Sprite_ Hades_Sprite_;
+typedef struct Hades_Timer Hades_Timer;
 typedef int Hades_Sprite; /** Front-end sprite */
 
 const Hades_Sprite Hades_NullSprite;    /** null sprite */
@@ -62,6 +63,9 @@ struct Hades_Game {
 
     Hades_Sprite_* sprites[Hades_MaxSpriteBuckets];
     size_t sprite_count;
+
+    size_t max_tpf;
+    Hades_Timer* timer;
 
     void (*Start)(Hades_Game*);
 };

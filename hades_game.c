@@ -19,6 +19,7 @@
 #include "hades_texture.h"
 #include "hades_sprite.h"
 #include "hades_bool.h"
+#include "hades_timer.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <SDL2/SDL.h>
@@ -69,6 +70,8 @@ Hades_Game* Hades_CreateGame(const char* title, int w, int h)
         game->sprites[i] = NULL;
     }
     game->current_id = 0;
+    game->timer = Hades_CreateTimer();
+    game->max_tpf = 1000/60;
 
     return game;
 }
@@ -106,6 +109,7 @@ Hades_bool Hades_RunGame(Hades_Game* game)
     SDL_Event event;
 
     while (!has_quit) {
+        Hades_StartTimer(game->timer);
         while (SDL_PollEvent(&event)) {
             if (event.type == SDL_QUIT) {
                 has_quit = Hades_true;
@@ -138,8 +142,18 @@ Hades_bool Hades_RunGame(Hades_Game* game)
             }
         }
         SDL_RenderPresent(game->renderer);
+
+        int ticks = Hades_GetTimerTicks(game->timer);
+        if (ticks < game->max_tpf) {
+            SDL_Delay(game->max_tpf - ticks);
+        }
     }
     return Hades_true;
+}
+
+void Hades_SetFramerateCap(Hades_Game* game, size_t fps)
+{
+    game->max_tpf = 1000 / fps;
 }
 
 // --- Private Interface ---

@@ -85,6 +85,16 @@ void Hades_DestroyGame(Hades_Game*);
 Hades_bool Hades_RunGame(Hades_Game*);
 
 /** Defined in "hades_game.h"
+ * void Hades_SetFramerateCap(Hades_Game* game, size_t fps);
+ *  Cap the framerate
+ *
+ * Parameters
+ *  game - the game to cap the frame rate of
+ *   fps - max frames per second
+ */
+void Hades_SetFramerateCap(Hades_Game*, size_t);
+
+/** Defined in "hades_game.h"
  * size_t Hades_NextIDFromGame(Hades_Game* game);
  *  Get the next id from the game
  *
