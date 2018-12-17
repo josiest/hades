@@ -153,6 +153,15 @@ bool Hades_RunGame(Hades_Game* game)
         Hades_CloseSpriteIterator(&iter);
         SDL_RenderPresent(game->renderer);
 
+        Hades_ObjectIterator* objIter = Hades_IterateObjects(game->objects);
+        while (objIter) {
+            Hades_Object_* object = Hades_NextObject_(&objIter);
+            if (object->Update) {
+                object->Update(game, object->id);
+            }
+        }
+        Hades_CloseObjectIterator(&objIter);
+
         Hades_ObjectIterator* outiter = Hades_IterateObjects(game->objects);
         while (outiter) {
             Hades_Object_* this = Hades_NextObject_(&outiter);

@@ -50,6 +50,39 @@ Hades_SetObjectCollisionStayFunction(Hades_Game* game, Hades_Object id,
     return true;
 }
 
+bool Hades_SetObjectUpdateFunction(Hades_Game* game, Hades_Object id,
+                                   Hades_ObjectUpdateFunction* Update)
+{
+    Hades_Object_* object = Hades_GetObject(game->objects, id, NULL);
+    if (!object) {
+        return false;
+    }
+    object->Update = Update;
+    return true;
+}
+
+bool Hades_MoveObjectBy(Hades_Game* game, Hades_Object id, int dx, int dy)
+{
+    Hades_Object_* object = Hades_GetObject(game->objects, id, NULL);
+    if (!object) {
+        return false;
+    }
+    object->x += dx;
+    object->y += dy;
+    return true;
+}
+
+bool Hades_MoveObjectTo(Hades_Game* game, Hades_Object id, int x, int y)
+{
+    Hades_Object_* object = Hades_GetObject(game->objects, id, NULL);
+    if (!object) {
+        return false;
+    }
+    object->x = x;
+    object->y = y;
+    return true;
+}
+
 void Hades_DestroyObjectMap(Hades_Object_* objects[], size_t* size)
 {
     for (int i = 0; i < Hades_MaxBuckets; i++) {
