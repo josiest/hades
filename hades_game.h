@@ -25,7 +25,7 @@
 #define HADES_GAME_H
 
 #include <SDL2/SDL.h>
-#include "hades_bool.h"
+#include <stdbool.h>
 
 typedef struct Hades_Game Hades_Game;
 
@@ -69,7 +69,7 @@ void Hades_DestroyGame(Hades_Game*);
 // --- Game Functions ---
 
 /** Defined in "hades_game.h"
- * Hades_bool Hades_RunGame(Hades_Game* game);
+ * bool Hades_RunGame(Hades_Game* game);
  *  Run a game
  *
  * Parameters
@@ -82,7 +82,7 @@ void Hades_DestroyGame(Hades_Game*);
  *  If game fails to run, RunGame will return false and set the corresponding
  *  error message.
  */
-Hades_bool Hades_RunGame(Hades_Game*);
+bool Hades_RunGame(Hades_Game*);
 
 /** Defined in "hades_game.h"
  * void Hades_SetFramerateCap(Hades_Game* game, size_t fps);

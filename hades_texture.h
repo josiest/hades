@@ -12,8 +12,8 @@
 #define HADES_TEXTURE_H
 
 #include <stddef.h>
+#include <stdbool.h>
 #include <SDL2/SDL.h>
-#include "hades_bool.h"
 
 typedef struct {
     Uint8 r, g, b;
@@ -37,8 +37,8 @@ typedef struct Hades_Game Hades_Game;
 size_t Hades_GetTextureCount(Hades_Game*);
 
 /** Defined in "hades_texture.h"
- * Hades_bool Hades_LoadTexture(Hades_Game* game, const char* path,
- *                              Hades_Color* colorkey);
+ * bool Hades_LoadTexture(Hades_Game* game, const char* path,
+ *                        Hades_Color* colorkey);
  *  Load a texture into a game
  *
  * Parameters
@@ -63,6 +63,6 @@ size_t Hades_GetTextureCount(Hades_Game*);
  *  If LoadTexture fails, it will return false and set the corresponding
  *  error message.
  */
-Hades_bool Hades_LoadTexture(Hades_Game*, const char*, Hades_Color*);
+bool Hades_LoadTexture(Hades_Game*, const char*, Hades_Color*);
 
 #endif

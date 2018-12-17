@@ -19,10 +19,10 @@
 #include "hades_texture.h"
 #include "hades_sprite.h"
 #include "hades_object.h"
-#include "hades_bool.h"
 #include "hades_timer.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 #include <SDL2/SDL.h>
 
 // --- Creating and Deleting Games ---
@@ -108,21 +108,21 @@ void Hades_DestroyGame(Hades_Game* game)
 
 // --- Game functions ---
 
-Hades_bool Hades_RunGame(Hades_Game* game)
+bool Hades_RunGame(Hades_Game* game)
 {
     if (!game) {
         Hades_SetGameError("RunGame: Cannot run a null game");
-        return Hades_false;
+        return false;
     }
     game->Start(game);
-    Hades_bool has_quit = Hades_false;
+    bool has_quit = false;
     SDL_Event event;
 
     while (!has_quit) {
         Hades_StartTimer(game->timer);
         while (SDL_PollEvent(&event)) {
             if (event.type == SDL_QUIT) {
-                has_quit = Hades_true;
+                has_quit = true;
             }
         }
 
@@ -177,7 +177,7 @@ Hades_bool Hades_RunGame(Hades_Game* game)
             SDL_Delay(game->max_tpf - ticks);
         }
     }
-    return Hades_true;
+    return true;
 }
 
 void Hades_SetFramerateCap(Hades_Game* game, size_t fps)

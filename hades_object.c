@@ -1,9 +1,9 @@
 #include "hades_object.h"
 #include "hades_structure.h"
 #include "hades_game.h"
-#include "hades_bool.h"
 #include <string.h>
 #include <stdio.h>
+#include <stdbool.h>
 
 Hades_Object Hades_CreateRectObject(Hades_Game* game, int x, int y,
                                     size_t w, size_t h)
@@ -20,34 +20,34 @@ Hades_Object Hades_CreateRectObject(Hades_Game* game, int x, int y,
     return object->id;
 }
 
-Hades_bool Hades_DestroyObject(Hades_Game* game, Hades_Object id)
+bool Hades_DestroyObject(Hades_Game* game, Hades_Object id)
 {
     if (!game) {
-        return Hades_false;
+        return false;
     }
     Hades_Object_* prev = NULL;
     Hades_Object_* object = Hades_GetObject(game->objects, id, &prev);
     if (!object) {
-        return Hades_false;
+        return false;
     }
     if (prev) {
         prev->next = object->next;
     }
     free(object);
     game->object_count -= 1;
-    return Hades_true;
+    return true;
 }
 
-Hades_bool
+bool
 Hades_SetObjectCollisionStayFunction(Hades_Game* game, Hades_Object id,
                                      Hades_CollisionFunction* OnCollisionStay)
 {
     Hades_Object_* object = Hades_GetObject(game->objects, id, NULL);
     if (!object) {
-        return Hades_false;
+        return false;
     }
     object->OnCollisionStay = OnCollisionStay;
-    return Hades_true;
+    return true;
 }
 
 void Hades_DestroyObjectMap(Hades_Object_* objects[], size_t* size)
@@ -88,8 +88,7 @@ Hades_Object Hades_NextObject(Hades_Game* game)
     return (game->current_object)++;
 }
 
-Hades_bool Hades_CollidesWith(const Hades_Object_ this,
-                              const Hades_Object_ other)
+bool Hades_CollidesWith(const Hades_Object_ this, const Hades_Object_ other)
 {
     return (this.x + this.w) > other.x && this.x < (other.x + other.w) &&
            (this.y + this.h) > other.y && this.y < (other.y + other.h);

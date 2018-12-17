@@ -24,7 +24,6 @@
 #define HADES_SPRITE_H
 
 #include <SDL2/SDL.h>
-#include "hades_bool.h"
 
 typedef struct Hades_Game Hades_Game;
 typedef struct Hades_Sprite_ Hades_Sprite_;

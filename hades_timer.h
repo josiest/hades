@@ -1,8 +1,8 @@
 #ifndef HADES_TIMER_H
 #define HADES_TIMER_H
 
-#include "hades_bool.h"
 #include <stddef.h>
+#include <stdbool.h>
 
 /** defined in "hades_timer.h"
  * Hades_Timer
@@ -10,13 +10,14 @@
  *
  * Fields
  *  size_t start_ticks      ticks since first started
- *         paused_ticks     ticks since last paused
- *  Hades_bool paused       true if paused
+ *        paused_ticks      ticks since last paused
+ *
+ *  bool        paused      true if paused
  *             started      true if started
  */
 typedef struct Hades_Timer {
     size_t start_ticks, paused_ticks;
-    Hades_bool paused, started;
+    bool paused, started;
 } Hades_Timer;
 
 /** defined in "hades_timer.h"
@@ -62,15 +63,15 @@ void Hades_UnpauseTimer(Hades_Timer*);
 size_t Hades_GetTimerTicks(Hades_Timer*);
 
 /** defined in "hades_timer.h"
- * Hades_bool Hades_TimerIsStarted(Hades_Timer* timer);
+ * bool Hades_TimerIsStarted(Hades_Timer* timer);
  *  Returns true if timer has been started
  */
-Hades_bool Hades_TimerIsStarted(Hades_Timer*);
+bool Hades_TimerIsStarted(Hades_Timer*);
 
 /** defined in "hades_timer.h"
- * Hades_bool Hades_TimerIsPaused(Hades_Timer* timer);
+ * bool Hades_TimerIsPaused(Hades_Timer* timer);
  *  Returns true if timer has been paused
  */
-Hades_bool Hades_TimerIsPaused(Hades_Timer*);
+bool Hades_TimerIsPaused(Hades_Timer*);
 
 #endif
