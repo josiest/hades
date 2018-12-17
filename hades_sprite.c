@@ -35,7 +35,7 @@ Hades_Sprite Hades_CreateSprite(Hades_Game* game, int texture,
     Hades_Sprite_*
     spriteToAdd = (Hades_Sprite_*) malloc(sizeof(Hades_Sprite_));
 
-    spriteToAdd->id = Hades_NextIDFromGame(game);;
+    spriteToAdd->id = Hades_NextSpriteID(game);;
     spriteToAdd->texture = texture;
     spriteToAdd->src = NULL;
     if (srcrect) {
@@ -51,7 +51,7 @@ Hades_Sprite Hades_CreateSprite(Hades_Game* game, int texture,
     spriteToAdd->Update = NULL;
 
     // hash into map
-    size_t i = game->sprite_count % Hades_MaxSpriteBuckets;
+    size_t i = game->sprite_count % Hades_MaxBuckets;
     spriteToAdd->next = game->sprites[i];
     game->sprites[i] = spriteToAdd;
     game->sprite_count += 1;
@@ -62,7 +62,8 @@ Hades_Sprite Hades_CreateSprite(Hades_Game* game, int texture,
 void Hades_DestroySprite(Hades_Game* game, Hades_Sprite id)
 {
     Hades_Sprite_* prevSprite = NULL;
-    Hades_Sprite_* spriteToDestroy = Hades_GetSprite(game, id, &prevSprite);
+    Hades_Sprite_* spriteToDestroy = Hades_GetSprite(game->sprites, id,
+                                                     &prevSprite);
     if (spriteToDestroy) {
         if (prevSprite) {
             prevSprite->next = spriteToDestroy->next;
@@ -107,12 +108,12 @@ void Hades_RenderSprite(Hades_Game* game, Hades_Sprite_* sprite)
                    sprite->src, sprite->dst);
 }
 
-void Hades_DestroySpriteMap(Hades_Game* game)
+void Hades_DestroySpriteMap(Hades_Sprite_* sprites[], size_t* size)
 {
-    for (int i = 0; i < Hades_MaxSpriteBuckets; i++) {
-        while (game->sprites[i]) {
-            Hades_Sprite_* temp = game->sprites[i];
-            game->sprites[i] = temp->next;
+    for (int i = 0; i < Hades_MaxBuckets; i++) {
+        while (sprites[i]) {
+            Hades_Sprite_* temp = sprites[i];
+            sprites[i] = temp->next;
             if (temp->src) {
                 free(temp->src);
             }
@@ -122,26 +123,77 @@ void Hades_DestroySpriteMap(Hades_Game* game)
             free(temp);
         }
     }
-    game->sprite_count = 0;
+    *size = 0;
 }
 
-Hades_Sprite_* Hades_GetSprite(Hades_Game* game, Hades_Sprite id,
-                               Hades_Sprite_** prev_pointer)
+Hades_Sprite_* Hades_GetSprite(Hades_Sprite_* sprites[], Hades_Sprite id,
+                               Hades_Sprite_** prevptr)
 {
-    if (!game) {
-        return NULL;
-    }
-    size_t i = game->sprite_count % Hades_MaxSpriteBuckets;
+    Hades_SpriteIterator* iter = Hades_IterateSprites(sprites);
+
     Hades_Sprite_* prev = NULL;
-    for (Hades_Sprite_* current = game->sprites[i];
-            current != NULL; current = current->next) {
+    Hades_Sprite_* current = NULL;
+    while (iter) {
+        current = Hades_NextSprite_(&iter);
+
         if (current->id == id) {
-            if (prev_pointer) {
-                *prev_pointer = prev;
+            if (prevptr) {
+                *prevptr = prev;
             }
-            return current;
+            break;
         }
         prev = current;
     }
-    return NULL;
+    Hades_CloseSpriteIterator(&iter);
+    return current;
+}
+
+size_t Hades_NextSpriteID(Hades_Game* game)
+{
+    return (game->current_sprite)++;
+}
+
+Hades_SpriteIterator* Hades_IterateSprites(Hades_Sprite_* sprites[])
+{
+    Hades_SpriteIterator* head = NULL;
+    Hades_SpriteIterator* tail = NULL;
+
+    for (int i = 0; i < Hades_MaxBuckets; i++) {
+        Hades_Sprite_* current = sprites[i];
+        while (current) {
+
+            Hades_SpriteIterator* temp = (Hades_SpriteIterator*)
+                malloc(sizeof(Hades_SpriteIterator));
+            temp->sprite = current;
+            temp->next = NULL;
+
+            if (!tail) {
+                head = temp;
+            } else {
+                tail->next = temp;
+            }
+            tail = temp;
+
+            current = current->next;
+        }
+    }
+    return head;
+}
+
+void Hades_CloseSpriteIterator(Hades_SpriteIterator** iter)
+{
+    while (*iter) {
+        Hades_SpriteIterator* temp = *iter;
+        *iter = temp->next;
+        free(temp);
+    }
+}
+
+Hades_Sprite_* Hades_NextSprite_(Hades_SpriteIterator** iter)
+{
+    Hades_SpriteIterator* temp = *iter;
+    Hades_Sprite_* sprite = temp->sprite;
+    *iter = temp->next;
+    free(temp);
+    return sprite;
 }

@@ -18,6 +18,7 @@
 #include "hades_game.h"
 #include "hades_texture.h"
 #include "hades_sprite.h"
+#include "hades_object.h"
 #include "hades_bool.h"
 #include "hades_timer.h"
 #include <stdio.h>
@@ -65,11 +66,19 @@ Hades_Game* Hades_CreateGame(const char* title, int w, int h)
     for (int i = 0; i < Hades_MaxTextureCount; i++) {
         game->textures[i] = NULL;
     }
+
     game->sprite_count = 0;
-    for (int i = 0; i < Hades_MaxSpriteBuckets; i++) {
+    game->current_sprite = 0;
+    for (int i = 0; i < Hades_MaxBuckets; i++) {
         game->sprites[i] = NULL;
     }
-    game->current_id = 0;
+
+    game->object_count = 0;
+    game->current_object = 0;
+    for (int i = 0; i < Hades_MaxBuckets; i++) {
+        game->objects[i] = NULL;
+    }
+
     game->timer = Hades_CreateTimer();
     game->max_tpf = 1000/60;
 
@@ -79,7 +88,8 @@ Hades_Game* Hades_CreateGame(const char* title, int w, int h)
 void Hades_DestroyGame(Hades_Game* game)
 {
     if (game) {
-        Hades_DestroySpriteMap(game);
+        Hades_DestroyObjectMap(game->objects, &(game->object_count));
+        Hades_DestroySpriteMap(game->sprites, &(game->sprite_count));
         for (int i = 0; i < game->texture_count; i++) {
             SDL_DestroyTexture(game->textures[i]);
         }
@@ -119,29 +129,48 @@ Hades_bool Hades_RunGame(Hades_Game* game)
         SDL_SetRenderDrawColor(game->renderer, 0xff, 0xff, 0xff, 0xff);
         SDL_RenderClear(game->renderer);
 
-        for (int i = 0; i < Hades_MaxSpriteBuckets; i++) {
-            for (Hades_Sprite_* current = game->sprites[i];
-                    current != NULL;
-                    current = current->next) {
+        Hades_SpriteIterator* iter = Hades_IterateSprites(game->sprites);
+        while (iter) {
+            Hades_Sprite_* current = Hades_NextSprite_(&iter);
 
-                SDL_Texture* texture = game->textures[current->texture];
-                Hades_Color old_color = {0, 0, 0};
-                SDL_GetTextureColorMod(texture, &(old_color.r), &(old_color.g),
-                                       &(old_color.b));
+            SDL_Texture* texture = game->textures[current->texture];
 
-                if (current->UpdateTexture) {
-                    current->UpdateTexture(texture);
-                }
-                Hades_RenderSprite(game, current);
-                SDL_SetTextureColorMod(texture, old_color.r, old_color.g,
-                                       old_color.b);
+            Hades_Color old_color = {0, 0, 0};
+            SDL_GetTextureColorMod(texture, &(old_color.r), &(old_color.g),
+                                   &(old_color.b));
 
-                if (current->Update) {
-                    current->Update(game, current->id);
-                }
+            if (current->UpdateTexture) {
+                current->UpdateTexture(texture);
+            }
+            Hades_RenderSprite(game, current);
+            SDL_SetTextureColorMod(texture, old_color.r, old_color.g,
+                                   old_color.b);
+
+            if (current->Update) {
+                current->Update(game, current->id);
             }
         }
+        Hades_CloseSpriteIterator(&iter);
         SDL_RenderPresent(game->renderer);
+
+        Hades_ObjectIterator* outiter = Hades_IterateObjects(game->objects);
+        while (outiter) {
+            Hades_Object_* this = Hades_NextObject_(&outiter);
+            Hades_ObjectIterator* initer = Hades_CopyObjectIterator(outiter);
+            while (initer) {
+                Hades_Object_* other = Hades_NextObject_(&initer);
+                if (Hades_CollidesWith(*this, *other)) {
+                    if (this->OnCollisionStay) {
+                        this->OnCollisionStay(game, this->id, other->id);
+                    }
+                    if (other->OnCollisionStay) {
+                        other->OnCollisionStay(game, other->id, this->id);
+                    }
+                }
+            }
+            Hades_CloseObjectIterator(&initer);
+        }
+        Hades_CloseObjectIterator(&outiter);
 
         int ticks = Hades_GetTimerTicks(game->timer);
         if (ticks < game->max_tpf) {
@@ -157,8 +186,3 @@ void Hades_SetFramerateCap(Hades_Game* game, size_t fps)
 }
 
 // --- Private Interface ---
-
-size_t Hades_NextIDFromGame(Hades_Game* game)
-{
-    return (game->current_id)++;
-}

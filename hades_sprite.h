@@ -28,6 +28,7 @@
 
 typedef struct Hades_Game Hades_Game;
 typedef struct Hades_Sprite_ Hades_Sprite_;
+typedef struct Hades_SpriteIterator Hades_SpriteIterator;
 typedef int Hades_Sprite;
 
 // --------------------
@@ -127,32 +128,78 @@ void Hades_MoveSprite(Hades_Game*, Hades_Sprite, int, int);
 void Hades_RenderSprite(Hades_Game*, Hades_Sprite_*);
 
 /** defined in "hades_sprite.h"
- * void Hades_DestroySpriteMap(Hades_Game* game);
- *  Safely destroy all sprites in the game.
+ * void Hades_DestroySpriteMap(Hades_Sprite_* sprites[], size_t* size);
+ *  Destroy a sprite map
  *
  * Parameters
- *  game - the game to destroy sprites in
- *
- * Precodnitions
- *  All Sprites have been added via Hades_CreateSprite
+ *  sprites - map to destroy
+ *     size - of the sprite map
  *
  * Postconditions
- *  no sprites are left undestroyed
+ *  size is set to zero and all sprites are destroyed.
  */
-void Hades_DestroySpriteMap(Hades_Game*);
+void Hades_DestroySpriteMap(Hades_Sprite_*[], size_t*);
 
 /** defined in "hades_sprite.h"
- * Hades_Sprite_* Hades_GetSprite(Hades_Game* game, Hades_Sprite sprite,
- *                                Hades_Sprite_** prev_pointer);
+ * Hades_Sprite_* Hades_GetSprite(Hades_Sprite_* sprites[], Hades_Sprite id,
+ *                                Hades_Sprite_** prev);
  *  Retrieve the specified sprite instance.
  *
  * Parameters
- *    game - the game to get the sprite from
- *  sprite - the id of the sprite to retrieve
+ *  sprites - contains the sprite
+ *       id - of the sprite
+ *     prev - previous sprite in map
  *
  * Postconditions
  *  If sprite doesn't exist in the game or if game doesn't exist, returns null
  */
-Hades_Sprite_* Hades_GetSprite(Hades_Game*, Hades_Sprite, Hades_Sprite_**);
+Hades_Sprite_* Hades_GetSprite(Hades_Sprite_*[], Hades_Sprite, Hades_Sprite_**);
+
+/** defined in "hades_sprite.h"
+ * size_t Hades_NextSpriteID(Hades_Game* game);
+ *  Get the next sprite id
+ *
+ * Parameters
+ *  game - to grab id from
+ *
+ * Postconditions
+ *  every id returned is unique
+ */
+size_t Hades_NextSpriteID(Hades_Game*);
+
+/** defined in "hades_sprite.h"
+ * Hades_SpriteIterator* Hades_IterateSprites(Hades_Sprite_* sprites[]);
+ *  iterate a sprite map
+ *
+ * Parameters
+ *  sprites - map to iterate
+ */
+Hades_SpriteIterator* Hades_IterateSprites(Hades_Sprite_*[]);
+
+/** defined in "hades_sprite.h"
+ * void Hades_CloseSpriteIterator(Hades_SpriteIterator** iter);
+ *  close a sprite iterator
+ *
+ * Parameters
+ *  iter - the iterator to close
+ *
+ * Postconditions
+ *  iter points to null
+ */
+void Hades_CloseSpriteIterator(Hades_SpriteIterator**);
+
+/** defined in "hades_sprite.h"
+ * Hades_Sprite_* Hades_NextSprite_(Hades_SpriteIterator** iter);
+ *
+ * Parameters
+ *  iter - to get the next sprite from
+ *
+ * Preconditions
+ *  there is a next sprite to grab
+ *
+ * Postconditions
+ *  iter will be written with the next sprite iterator node
+ */
+Hades_Sprite_* Hades_NextSprite_(Hades_SpriteIterator**);
 
 #endif

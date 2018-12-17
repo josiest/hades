@@ -94,17 +94,4 @@ Hades_bool Hades_RunGame(Hades_Game*);
  */
 void Hades_SetFramerateCap(Hades_Game*, size_t);
 
-/** Defined in "hades_game.h"
- * size_t Hades_NextIDFromGame(Hades_Game* game);
- *  Get the next id from the game
- *
- * Parameters
- *  game - the game to get the id from
- *
- * Postconditions
- *  The id returned is unique, and the game is updated to create a new id
- *  the next time NextID is called
- */
-size_t Hades_NextIDFromGame(Hades_Game*);
-
 #endif
