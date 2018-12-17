@@ -22,7 +22,10 @@ typedef struct Hades_ObjectIterator Hades_ObjectIterator;
 typedef struct Hades_Timer Hades_Timer;
 typedef int Hades_Sprite; /** Front-end sprite */
 typedef int Hades_Object;
+typedef void (Hades_SpriteTextureFunction)(SDL_Texture*);
+typedef void (Hades_SpriteUpdateFunction)(Hades_Game*, Hades_Sprite);
 typedef void (Hades_CollisionFunction)(Hades_Game*, Hades_Object, Hades_Object);
+typedef void (Hades_ObjectUpdateFunction)(Hades_Game*, Hades_Object);
 
 const Hades_Sprite Hades_NullSprite;    /** null sprite */
 const Hades_Object Hades_NullObject;
@@ -46,8 +49,8 @@ struct Hades_Sprite_ {
     int texture;
     SDL_Rect* src, * dst;
     Hades_Sprite_* next;
-    void (*UpdateTexture)(SDL_Texture*);
-    void (*Update)(Hades_Game*, Hades_Sprite);
+    Hades_SpriteTextureFunction* SetTexture;
+    Hades_SpriteUpdateFunction* Update;
 };
 
 /** defined in "hades_structure.h"
@@ -98,6 +101,7 @@ struct Hades_Object_ {
     int x, y;
     size_t w, h;
     Hades_CollisionFunction* OnCollisionStay;
+    Hades_ObjectUpdateFunction* Update;
 };
 
 /** defined in "hades_structure.h"

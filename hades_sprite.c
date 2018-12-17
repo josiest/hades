@@ -32,23 +32,21 @@ const Hades_Sprite Hades_NullSprite = -1;
 Hades_Sprite Hades_CreateSprite(Hades_Game* game, int texture,
                                 SDL_Rect* srcrect, SDL_Rect* dstrect)
 {
-    Hades_Sprite_*
-    spriteToAdd = (Hades_Sprite_*) malloc(sizeof(Hades_Sprite_));
+    Hades_Sprite_ copy = {
+        Hades_NextSpriteID(game), texture, NULL, NULL, NULL, NULL, NULL
+    };
+    Hades_Sprite_* spriteToAdd = (Hades_Sprite_*)
+        malloc(sizeof(Hades_Sprite_));
+    memcpy(spriteToAdd, &copy, sizeof(Hades_Sprite_));
 
-    spriteToAdd->id = Hades_NextSpriteID(game);;
-    spriteToAdd->texture = texture;
-    spriteToAdd->src = NULL;
     if (srcrect) {
         spriteToAdd->src = (SDL_Rect*) malloc(sizeof(SDL_Rect));
         memcpy(spriteToAdd->src, srcrect, sizeof(SDL_Rect));
     }
-    spriteToAdd->dst = NULL;
     if (dstrect) {
         spriteToAdd->dst = (SDL_Rect*) malloc(sizeof(SDL_Rect));
         memcpy(spriteToAdd->dst, dstrect, sizeof(SDL_Rect));
     }
-    spriteToAdd->UpdateTexture = NULL;
-    spriteToAdd->Update = NULL;
 
     // hash into map
     size_t i = game->sprite_count % Hades_MaxBuckets;
@@ -67,6 +65,8 @@ void Hades_DestroySprite(Hades_Game* game, Hades_Sprite id)
     if (spriteToDestroy) {
         if (prevSprite) {
             prevSprite->next = spriteToDestroy->next;
+        } else {
+            game->sprites[id % Hades_MaxBuckets] = spriteToDestroy->next;
         }
         if (spriteToDestroy->src) {
             free(spriteToDestroy->src);
@@ -79,25 +79,25 @@ void Hades_DestroySprite(Hades_Game* game, Hades_Sprite id)
     }
 }
 
-void Hades_SetUpdateTextureFunction(Hades_Game* game, Hades_Sprite sprite,
-                                    void (*UpdateTexture)(SDL_Texture*))
+void Hades_SetSpriteTextureFunction(Hades_Game* game, Hades_Sprite id,
+                                    Hades_SpriteTextureFunction* SetTexture)
 {
-    Hades_Sprite_* sprite_ = game->sprites[sprite];
-    sprite_->UpdateTexture = UpdateTexture;
+    Hades_Sprite_* sprite = Hades_GetSprite(game->sprites, id, NULL);
+    sprite->SetTexture = SetTexture;
 }
 
-void Hades_SetSpriteUpdateFunction(Hades_Game* game, Hades_Sprite sprite,
-                                   void (*Update)(Hades_Game*, Hades_Sprite))
+void Hades_SetSpriteUpdateFunction(Hades_Game* game, Hades_Sprite id,
+                                   Hades_SpriteUpdateFunction* Update)
 {
-    Hades_Sprite_* sprite_ = game->sprites[sprite];
-    sprite_->Update = Update;
+    Hades_Sprite_* sprite = Hades_GetSprite(game->sprites, id, NULL);
+    sprite->Update = Update;
 }
 
-void Hades_MoveSprite(Hades_Game* game, Hades_Sprite sprite, int dx, int dy)
+void Hades_MoveSprite(Hades_Game* game, Hades_Sprite id, int dx, int dy)
 {
-    Hades_Sprite_* sprite_ = game->sprites[sprite];
-    sprite_->dst->x += dx;
-    sprite_->dst->y += dy;
+    Hades_Sprite_* sprite = Hades_GetSprite(game->sprites, id, NULL);
+    sprite->dst->x += dx;
+    sprite->dst->y += dy;
 }
 
 // --- Private Interface ---

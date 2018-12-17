@@ -30,6 +30,8 @@ typedef struct Hades_Game Hades_Game;
 typedef struct Hades_Sprite_ Hades_Sprite_;
 typedef struct Hades_SpriteIterator Hades_SpriteIterator;
 typedef int Hades_Sprite;
+typedef void (Hades_SpriteTextureFunction)(SDL_Texture*);
+typedef void (Hades_SpriteUpdateFunction)(Hades_Game*, Hades_Sprite);
 
 // --------------------
 // - Public Interface -
@@ -80,8 +82,8 @@ void Hades_DestroySprite(Hades_Game*, Hades_Sprite);
  *          sprite - sprite to set UpdateTexture function for
  *   UpdateTexture - pointer to function telling sprite how to render texture
  */
-void Hades_SetUpdateTextureFunction(Hades_Game*, Hades_Sprite,
-                                    void (*UpdateTexture)(SDL_Texture*));
+void Hades_SetSpriteTextureFunction(Hades_Game*, Hades_Sprite,
+                                    Hades_SpriteTextureFunction*);
 
 /** defined in "hades_sprite.h"
  * void
@@ -95,7 +97,7 @@ void Hades_SetUpdateTextureFunction(Hades_Game*, Hades_Sprite,
  *   Update - pointer to function telling sprite how to update
  */
 void Hades_SetSpriteUpdateFunction(Hades_Game*, Hades_Sprite,
-                                   void (*)(Hades_Game*, Hades_Sprite));
+                                   Hades_SpriteUpdateFunction*);
 
 /** defined in "hades_sprite.h"
  * void Hades_MoveSprite(Hades_Game* game, Hades_Sprite sprite,
