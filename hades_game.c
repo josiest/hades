@@ -168,13 +168,47 @@ bool Hades_RunGame(Hades_Game* game)
             Hades_ObjectIterator* initer = Hades_CopyObjectIterator(outiter);
             while (initer) {
                 Hades_Object_* other = Hades_NextObject_(&initer);
+
                 if (Hades_CollidesWith(*this, *other)) {
-                    if (this->OnCollisionStay) {
-                        this->OnCollisionStay(game, this->id, other->id);
+
+                    if (!Hades_SetContainsObject(this->collision_set,
+                                                 other->id)) {
+
+                        if (this->OnCollisionEnter) {
+                            this->OnCollisionEnter(game, this->id, other->id);
+                        }
+                        if (other->OnCollisionEnter) {
+                            other->OnCollisionEnter(game, other->id, this->id);
+                        }
+                        Hades_AddObjectToSet(this->collision_set,
+                                             &this->collision_count,
+                                             other->id);
+                        Hades_AddObjectToSet(other->collision_set,
+                                             &other->collision_count,
+                                             this->id);
+
+                    } else {
+                        if (this->OnCollisionStay) {
+                            this->OnCollisionStay(game, this->id, other->id);
+                        }
+                        if (other->OnCollisionStay) {
+                            other->OnCollisionStay(game, other->id, this->id);
+                        }
                     }
-                    if (other->OnCollisionStay) {
-                        other->OnCollisionStay(game, other->id, this->id);
+                } else if (Hades_SetContainsObject(this->collision_set,
+                                                   other->id)) {
+                    if (this->OnCollisionExit) {
+                        this->OnCollisionExit(game, this->id, other->id);
                     }
+                    if (other->OnCollisionExit) {
+                        other->OnCollisionExit(game, other->id, this->id);
+                    }
+                    Hades_RemoveObjectFromSet(this->collision_set,
+                                              &this->collision_count,
+                                              other->id);
+                    Hades_RemoveObjectFromSet(other->collision_set,
+                                              &other->collision_count,
+                                              this->id);
                 }
             }
             Hades_CloseObjectIterator(&initer);

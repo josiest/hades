@@ -19,6 +19,7 @@ typedef struct Hades_Sprite_ Hades_Sprite_;
 typedef struct Hades_SpriteIterator Hades_SpriteIterator;
 typedef struct Hades_Object_ Hades_Object_;
 typedef struct Hades_ObjectIterator Hades_ObjectIterator;
+typedef struct Hades_ObjectSetNode Hades_ObjectSetNode;
 typedef struct Hades_Timer Hades_Timer;
 typedef int Hades_Sprite; /** Front-end sprite */
 typedef int Hades_Object;
@@ -97,10 +98,18 @@ struct Hades_SpriteIterator {
  */
 struct Hades_Object_ {
     Hades_Object id;
-    Hades_Object_* next;
     int x, y;
     size_t w, h;
-    Hades_CollisionFunction* OnCollisionStay;
+
+    Hades_Object_* next;
+
+    size_t collision_count;
+    Hades_ObjectSetNode* collision_set[Hades_MaxBuckets];
+
+    Hades_CollisionFunction* OnCollisionEnter,
+                           * OnCollisionStay,
+                           * OnCollisionExit;
+
     Hades_ObjectUpdateFunction* Update;
 };
 
@@ -115,6 +124,11 @@ struct Hades_Object_ {
 struct Hades_ObjectIterator {
     Hades_Object_* object;
     Hades_ObjectIterator* next;
+};
+
+struct Hades_ObjectSetNode {
+    Hades_Object object;
+    Hades_ObjectSetNode* next;
 };
 
 /** Defined in "hades_structure.h"
