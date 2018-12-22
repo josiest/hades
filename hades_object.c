@@ -25,20 +25,10 @@ Hades_Object Hades_CreateRectObject(Hades_Game* game, int x, int y,
 
 bool Hades_DestroyObject(Hades_Game* game, Hades_Object id)
 {
-    if (!game) {
+    if (!Hades_GetObject(game->objects, id, NULL)) {
         return false;
     }
-    Hades_Object_* prev = NULL;
-    Hades_Object_* object = Hades_GetObject(game->objects, id, &prev);
-    if (!object) {
-        return false;
-    }
-    if (prev) {
-        prev->next = object->next;
-    }
-    Hades_DestroyObjectSet(object->collision_set, &object->collision_count);
-    free(object);
-    game->object_count -= 1;
+    Hades_AddObjectToSet(game->dead_objects, game->dead_count, id);
     return true;
 }
 
@@ -108,6 +98,27 @@ bool Hades_MoveObjectTo(Hades_Game* game, Hades_Object id, int x, int y)
     }
     object->x = x;
     object->y = y;
+    return true;
+}
+
+bool Hades_DestroyObject_(Hades_Game* game, Hades_Object id)
+{
+    if (!game) {
+        return false;
+    }
+    Hades_Object_* prev = NULL;
+    Hades_Object_* object = Hades_GetObject(game->objects, id, &prev);
+    if (!object) {
+        return false;
+    }
+    if (prev) {
+        prev->next = object->next;
+    } else {
+        game->objects[id % Hades_MaxBuckets] = object->next;
+    }
+    Hades_DestroyObjectSet(object->collision_set, &object->collision_count);
+    free(object);
+    game->object_count -= 1;
     return true;
 }
 

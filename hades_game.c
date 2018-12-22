@@ -79,6 +79,11 @@ Hades_Game* Hades_CreateGame(const char* title, int w, int h)
         game->objects[i] = NULL;
     }
 
+    game->dead_count = 0;
+    for (int i = 0; i < Hades_MaxBuckets; i++) {
+        game->dead_objects[i] = NULL;
+    }
+
     game->timer = Hades_CreateTimer();
     game->max_tpf = 1000/60;
 
@@ -214,6 +219,13 @@ bool Hades_RunGame(Hades_Game* game)
             Hades_CloseObjectIterator(&initer);
         }
         Hades_CloseObjectIterator(&outiter);
+
+        Hades_ObjectSetNode* iter = Hades_IterateObjectSet(game->dead_objects);
+        while (iter) {
+            Hades_ObjectSetNode* current = Hades_NextObjectNode(&iter);
+            Hades_DestroyObject_(game, id);
+        }
+        Hades_CloseObjectNodeIterator(&iter);
 
         int ticks = Hades_GetTimerTicks(game->timer);
         if (ticks < game->max_tpf) {

@@ -150,7 +150,6 @@ struct Hades_Game {
     SDL_Window* window;
     SDL_Renderer* renderer;
 
-
     SDL_Texture* textures[Hades_MaxTextureCount];
     size_t texture_count;
 
@@ -161,6 +160,9 @@ struct Hades_Game {
     size_t current_object;
     Hades_Object_* objects[Hades_MaxBuckets];
     size_t object_count;
+
+    Hades_ObjectSetNode* dead_objects[Hades_MaxBuckets];
+    size_t dead_count;
 
     size_t max_tpf;
     Hades_Timer* timer;

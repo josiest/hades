@@ -16,6 +16,7 @@ typedef void (Hades_ObjectUpdateFunction)(Hades_Game*, Hades_Object);
 
 Hades_Object Hades_CreateRectObject(Hades_Game*, int, int, size_t, size_t);
 bool Hades_DestroyObject(Hades_Game*, Hades_Object);
+bool Hades_DestroyObject_();
 bool Hades_SetObjectCollisionEnterFunction(Hades_Game*, Hades_Object,
                                            Hades_CollisionFunction*);
 bool Hades_SetObjectCollisionStayFunction(Hades_Game*, Hades_Object,
