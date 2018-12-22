@@ -48,9 +48,8 @@ Hades_ObjectSetNode*
 Hades_GetObjectNodeFromSet(Hades_ObjectSetNode*[], Hades_Object,
                            Hades_ObjectSetNode**);
 
-/*Hades_ObjectSetNode* Hades_IterateObjectSet(Hades_ObjectSetNode*[]);
+Hades_ObjectSetNode* Hades_IterateObjectSet(Hades_ObjectSetNode*[]);
 Hades_ObjectSetNode* Hades_NextObjectNode(Hades_ObjectSetNode**);
 void Hades_CloseObjectNodeIterator(Hades_ObjectSetNode**);
-*/
 
 #endif

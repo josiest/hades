@@ -28,7 +28,7 @@ bool Hades_DestroyObject(Hades_Game* game, Hades_Object id)
     if (!Hades_GetObject(game->objects, id, NULL)) {
         return false;
     }
-    Hades_AddObjectToSet(game->dead_objects, game->dead_count, id);
+    Hades_AddObjectToSet(game->dead_objects, &(game->dead_count), id);
     return true;
 }
 
@@ -314,7 +314,7 @@ Hades_GetObjectNodeFromSet(Hades_ObjectSetNode* objects[], Hades_Object id,
     return NULL;
 }
 
-/*Hades_ObjectSetNode* Hades_IterateObjectSet(Hades_ObjectSetNode* objects[])
+Hades_ObjectSetNode* Hades_IterateObjectSet(Hades_ObjectSetNode* objects[])
 {
     Hades_ObjectSetNode* head = NULL,
                        * tail = NULL;
@@ -350,7 +350,7 @@ Hades_ObjectSetNode* Hades_NextObjectNode(Hades_ObjectSetNode** iter)
     return temp;
 }
 
-void Hades_CloseObjectNodeIterator(HadesObjectSetNode** iter)
+void Hades_CloseObjectNodeIterator(Hades_ObjectSetNode** iter)
 {
     while (*iter) {
         Hades_ObjectSetNode* temp = *iter;
@@ -358,4 +358,3 @@ void Hades_CloseObjectNodeIterator(HadesObjectSetNode** iter)
         free(temp);
     }
 }
-*/

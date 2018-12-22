@@ -134,9 +134,9 @@ bool Hades_RunGame(Hades_Game* game)
         SDL_SetRenderDrawColor(game->renderer, 0xff, 0xff, 0xff, 0xff);
         SDL_RenderClear(game->renderer);
 
-        Hades_SpriteIterator* iter = Hades_IterateSprites(game->sprites);
-        while (iter) {
-            Hades_Sprite_* current = Hades_NextSprite_(&iter);
+        Hades_SpriteIterator* spriter = Hades_IterateSprites(game->sprites);
+        while (spriter) {
+            Hades_Sprite_* current = Hades_NextSprite_(&spriter);
 
             SDL_Texture* texture = game->textures[current->texture];
 
@@ -155,7 +155,7 @@ bool Hades_RunGame(Hades_Game* game)
                 current->Update(game, current->id);
             }
         }
-        Hades_CloseSpriteIterator(&iter);
+        Hades_CloseSpriteIterator(&spriter);
         SDL_RenderPresent(game->renderer);
 
         Hades_ObjectIterator* objIter = Hades_IterateObjects(game->objects);
@@ -220,12 +220,15 @@ bool Hades_RunGame(Hades_Game* game)
         }
         Hades_CloseObjectIterator(&outiter);
 
-        Hades_ObjectSetNode* iter = Hades_IterateObjectSet(game->dead_objects);
-        while (iter) {
-            Hades_ObjectSetNode* current = Hades_NextObjectNode(&iter);
-            Hades_DestroyObject_(game, id);
+        Hades_ObjectSetNode* objiter;
+        objiter = Hades_IterateObjectSet(game->dead_objects);
+        while (objiter) {
+            Hades_ObjectSetNode* current = Hades_NextObjectNode(&objiter);
+            Hades_Object_* object;
+            object = Hades_GetObject(game->objects, current->object, NULL);
+            Hades_DestroyObject_(game, object->id);
         }
-        Hades_CloseObjectNodeIterator(&iter);
+        Hades_CloseObjectNodeIterator(&objiter);
 
         int ticks = Hades_GetTimerTicks(game->timer);
         if (ticks < game->max_tpf) {
