@@ -163,20 +163,15 @@ void* Hades_GetFromHMap(const Hades_HMap*, const void*);
 Hades_HMapNode* Hades_GetNodeFromHMap(const Hades_HMap*, const void*);
 
 /** defined in "hades_hmap.h"
- * Hades_Iter* Hades_IterHMap(const Hades_HMap* map,
- *                            const Hades_Consumer FreeEntry);
+ * Hades_Iter* Hades_IterHMap(const Hades_HMap* map);
  *  Iterate the entries in a map.
  *
  * Parameters:
- *        map - to iterate
- *  FreeEntry - define how to deallocate an entry
- *
- * Preconditions:
- *  FreeEntry should deallocate the key, value and entry itself
+ *  map - to iterate
  *
  * Postconditions:
  *  The iterator returned iterates HMapEntries
  */
-Hades_Iter* Hades_IterHMap(const Hades_HMap*, const Hades_Consumer);
+Hades_Iter* Hades_IterHMap(const Hades_HMap*);
 
 #endif

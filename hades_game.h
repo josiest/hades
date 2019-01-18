@@ -8,10 +8,7 @@
 typedef struct Hades_HMap Hades_HMap;
 
 typedef struct Hades_Game Hades_Game;
-typedef struct Hades_ObjStruct Hades_ObjStruct;
 typedef struct Hades_Timer Hades_Timer;
-typedef struct Hades_Sprite Hades_Sprite;
-typedef int Hades_Object;
 
 /** Defined in "hades_game.h"
  *  Hades_Game
@@ -37,12 +34,11 @@ struct Hades_Game {
 
     size_t next_sprID;
     Hades_HMap* sprs;
-    /*size_t spritec;
-    Hades_SprStruct* sprites[Hades_MaxBuckets];*/
 
     size_t next_objID;
-    size_t objc;
-    Hades_ObjStruct* objs[Hades_MaxBuckets];
+    Hades_HMap* objs;
+    /*size_t objc;
+    Hades_ObjStruct* objs[Hades_MaxBuckets];*/
 
     size_t max_tpf;
     Hades_Timer* timer;

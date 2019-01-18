@@ -14,22 +14,22 @@ void Test_R1SetTexture(Hades_Texture* tex)
     SDL_SetTextureColorMod(tex->sdl, 255, 0, 0);
 }
 
-void Test_R1OnClsnEnter(Hades_Game* game, Hades_Object this,
-                        Hades_Object other)
+void Test_R1OnClsnEnter(Hades_Game* game, Hades_Object* this,
+                        Hades_Object* other)
 {
     for (int i = 1; i <= 10; i++) {
         printf("%d\n", i);
     }
 }
 
-void Test_R1OnClsnStay(Hades_Game* game, Hades_Object this,
-                       Hades_Object other)
+void Test_R1OnClsnStay(Hades_Game* game, Hades_Object* this,
+                       Hades_Object* other)
 {
     puts("Kablam!");
 }
 
-void Test_R1OnClsnExit(Hades_Game* game, Hades_Object this,
-                       Hades_Object other)
+void Test_R1OnClsnExit(Hades_Game* game, Hades_Object* this,
+                       Hades_Object* other)
 {
     for (int i = 10; i > 0; i--) {
         printf("%d\n", i);
@@ -41,9 +41,9 @@ void Test_R1UpdateSprite(Hades_Game* game, Hades_Sprite* sprite)
     Hades_MvSprBy(*sprite, 2, 0);
 }
 
-void Test_R1UpdateObject(Hades_Game* game, Hades_Object object)
+void Test_R1UpdateObject(Hades_Game* game, Hades_Object* object)
 {
-    Hades_MvObjBy(game, object, 2, 0);
+    Hades_MvObjBy(object, 2, 0);
 }
 
 // R2 Functions
@@ -53,8 +53,8 @@ void Test_R2SetTexture(Hades_Texture* tex)
     SDL_SetTextureColorMod(tex->sdl, 0, 0, 255);
 }
 
-void Test_R2OnClsnStay(Hades_Game* game, Hades_Object this,
-                       Hades_Object other)
+void Test_R2OnClsnStay(Hades_Game* game, Hades_Object* this,
+                       Hades_Object* other)
 {
     puts("Kapow!");
 }
@@ -75,22 +75,21 @@ void Test_Start(Hades_Game* game) {
     r1_spr->SetTexture = Test_R1SetTexture;
     r1_spr->Update = Test_R1UpdateSprite;
 
-    Hades_Object r1_obj;
-    r1_obj = Hades_NewRectObj(game, r1_rect.x, r1_rect.y, r1_rect.w, r1_rect.h);
-
-    Hades_DefObjClsnEnter(game, r1_obj, Test_R1OnClsnEnter);
-    Hades_DefObjClsnStay(game, r1_obj, Test_R1OnClsnStay);
-    Hades_DefObjClsnExit(game, r1_obj, Test_R1OnClsnExit);
-    Hades_DefObjUpdate(game, r1_obj, Test_R1UpdateObject);
+    Hades_Object* r1_obj =
+        Hades_NewRectObj(game, r1_rect.x, r1_rect.y, r1_rect.w, r1_rect.h);
+    r1_obj->OnClsnEnter = Test_R1OnClsnEnter;
+    r1_obj->OnClsnStay = Test_R1OnClsnStay;
+    r1_obj->OnClsnExit = Test_R1OnClsnExit;
+    r1_obj->Update = Test_R1UpdateObject;
 
     size_t r2_size = 40;
     SDL_Rect r2_rect = {200, 40, r2_size, r2_size};
     Hades_Sprite* r2_spr = Hades_NewSpr(game, sqrtex, NULL, &r2_rect);
     r2_spr->SetTexture = Test_R2SetTexture;
 
-    Hades_Object r2_obj;
-    r2_obj = Hades_NewRectObj(game, r2_rect.x, r2_rect.y, r2_size, r2_size);
-    Hades_DefObjClsnStay(game, r2_obj, &Test_R2OnClsnStay);
+    Hades_Object* r2_obj =
+        Hades_NewRectObj(game, r2_rect.x, r2_rect.y, r2_size, r2_size);
+    r2_obj->OnClsnStay = Test_R2OnClsnStay;
 
     Hades_SetFramerateCap(game, 30);
 }

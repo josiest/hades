@@ -1,21 +1,15 @@
 #include "hades_timer.h"
+#include <string.h>
 #include <stdlib.h>
 #include <stdbool.h>
 #include <SDL2/SDL.h>
 
 Hades_Timer* Hades_CreateTimer()
 {
+    Hades_Timer timcpy = {0, 0, false, false};
     Hades_Timer* timer = (Hades_Timer*) malloc(sizeof(Hades_Timer));
-    timer->start_ticks = 0;
-    timer->paused_ticks = 0;
-    timer->paused = false;
-    timer->started = false;
+    memcpy(timer, &timcpy, sizeof(Hades_Timer));
     return timer;
-}
-
-void Hades_DestroyTimer(Hades_Timer* timer)
-{
-    free(timer);
 }
 
 void Hades_StartTimer(Hades_Timer* timer)

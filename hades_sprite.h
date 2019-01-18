@@ -66,7 +66,7 @@ bool Hades_SprEq(const void*, const void*);
  *  for the specified texture. Otherwise, src- and dst- rect are copied.
  */
 Hades_Sprite* Hades_NewSpr(Hades_Game*, size_t,
-               const SDL_Rect*, const SDL_Rect*);
+                           const SDL_Rect*, const SDL_Rect*);
 
 /** defined in "hades_sprite.h"
  * void Hades_FreeSpr(void* sprite);

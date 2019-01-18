@@ -5,19 +5,17 @@
 #include <stddef.h>
 #include <stdbool.h>
 
-typedef int Hades_Object;
-
 /** defined in "hades_objset.h"
  * Hades_ObjSetNode
  *  used for creating object sets.
  *
  * Fields
- *         Hades_Object id - of object
+ *               size_t id - of object
  *  Hades_ObjSetNode* next - node in bucket
  */
 typedef struct Hades_ObjSetNode Hades_ObjSetNode;
 struct Hades_ObjSetNode {
-    Hades_Object id;
+    size_t id;
     Hades_ObjSetNode* next;
 };
 
@@ -35,18 +33,17 @@ struct Hades_ObjSetNode {
 void Hades_ClearObjSet(Hades_ObjSetNode*[], size_t*);
 
 /** defined in "hades_objset.h"
- * bool Hades_SetHasObj(Hades_ObjSetNode* set[], Hades_Object id);
+ * bool Hades_SetHasObj(Hades_ObjSetNode* set[], size_t id);
  *  Determine if an object set contains the given id.
  *
  * Parameters
  *  set - to look in
  *   id - to look for
  */
-bool Hades_SetHasObj(Hades_ObjSetNode*[], Hades_Object);
+bool Hades_SetHasObj(Hades_ObjSetNode*[], size_t);
 
 /** defined in "hades_objset.h"
- * bool Hades_AddObjToSet(Hades_ObjSetNode* set[], size_t* size,
- *                        Hades_Object id);
+ * bool Hades_AddObjToSet(Hades_ObjSetNode* set[], size_t* size, size_t id);
  *  Add an object to a set
  *
  * Preconditions:
@@ -57,11 +54,10 @@ bool Hades_SetHasObj(Hades_ObjSetNode*[], Hades_Object);
  *  size - of set
  *    id - of object to add
  */
-bool Hades_AddObjToSet(Hades_ObjSetNode*[], size_t*, Hades_Object);
+bool Hades_AddObjToSet(Hades_ObjSetNode*[], size_t*, size_t);
 
 /** defined in "hades_objset.h"
- * bool Hades_RmObjFromSet(Hades_ObjSetNode* set[], size_t* size,
- *                         Hades_Object id);
+ * bool Hades_RmObjFromSet(Hades_ObjSetNode* set[], size_t* size, size_t id);
  *  Remove an object from a set.
  *
  * Preconditions:
@@ -72,11 +68,11 @@ bool Hades_AddObjToSet(Hades_ObjSetNode*[], size_t*, Hades_Object);
  *  size - of the set
  *    id - of object to remove
  */
-bool Hades_RmObjFromSet(Hades_ObjSetNode*[], size_t*, Hades_Object);
+bool Hades_RmObjFromSet(Hades_ObjSetNode*[], size_t*, size_t);
 
 /** defined in "hades_objset.h"
  * Hades_ObjSetNode*
- * Hades_GetObjNodeFromSet(Hades_ObjSetNode* set[], Hades_Object id,
+ * Hades_GetObjNodeFromSet(Hades_ObjSetNode* set[], size_t id,
  *                         Hades_ObjSetNode** prevptr);
  *  Get an object node from a set.
  *
@@ -88,7 +84,7 @@ bool Hades_RmObjFromSet(Hades_ObjSetNode*[], size_t*, Hades_Object);
  * Postconditions:
  *  Returns null if object doesn't exist in set.
  */
-Hades_ObjSetNode* Hades_GetObjNodeFromSet(Hades_ObjSetNode*[], Hades_Object,
+Hades_ObjSetNode* Hades_GetObjNodeFromSet(Hades_ObjSetNode*[], size_t,
                                           Hades_ObjSetNode**);
 
 #endif

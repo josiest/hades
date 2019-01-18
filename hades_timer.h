@@ -27,12 +27,6 @@ typedef struct Hades_Timer {
 Hades_Timer* Hades_CreateTimer();
 
 /** defined in "hades_timer.h"
- * viod Hades_DestroyTimer(Hades_Timer* timer);
- *  Destroy a timer
- */
-void Hades_DestroyTimer(Hades_Timer*);
-
-/** defined in "hades_timer.h"
  * void Hades_StartTimer(Hades_Timer* timer);
  *  Start the timer
  */

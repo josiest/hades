@@ -98,10 +98,11 @@ Hades_HMapNode* Hades_GetNodeFromHMap(const Hades_HMap* map, const void* key)
     return curr;
 }
 
-Hades_Iter* Hades_IterHMap(const Hades_HMap* map, 
-                           const Hades_Consumer FreeEntry)
+Hades_Iter* Hades_IterHMap(const Hades_HMap* map)
 {
-    Hades_Iter* iter = Hades_NewIter(FreeEntry);
+    Hades_Iter itercpy = {NULL, NULL};
+    Hades_Iter* iter = (Hades_Iter*) malloc(sizeof(Hades_Iter));
+    memcpy(iter, &itercpy, sizeof(Hades_Iter));
     for (int i = Hades_HMapBuckets-1; i >= 0; i--) {
         Hades_HMapNode* curr = map->buckets[i];
         while (curr) {
@@ -117,5 +118,6 @@ Hades_Iter* Hades_IterHMap(const Hades_HMap* map,
             curr = curr->next;
         }
     }
+    iter->curr = iter->top;
     return iter;
 }

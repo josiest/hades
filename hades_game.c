@@ -21,7 +21,6 @@
 #include "hades_texture.h"
 #include "hades_sprite.h"
 #include "hades_object.h"
-#include "hades_objstruct.h"
 #include "hades_objset.h"
 #include "hades_timer.h"
 #include <stdio.h>
@@ -74,11 +73,9 @@ Hades_Game* Hades_NewGame(const char* title, size_t w, size_t h)
     game->sprs = Hades_NewHMap(Hades_HashSpr, Hades_SprEq,
                                NULL, Hades_FreeSpr);
 
-    game->objc = 0;
-    game->next_objID = 0;
-    for (int i = 0; i < Hades_MaxBuckets; i++) {
-        game->objs[i] = NULL;
-    }
+    game->next_objID = 1;
+    game->objs = Hades_NewHMap(Hades_HashObj, Hades_ObjEq,
+                               NULL, Hades_FreeObj);
 
     game->timer = Hades_CreateTimer();
     game->max_tpf = 1000/60;
@@ -89,8 +86,11 @@ Hades_Game* Hades_NewGame(const char* title, size_t w, size_t h)
 void Hades_DestroyGame(Hades_Game* game)
 {
     if (game) {
-        Hades_ClearObjMap(game->objs, &(game->objc));
+        if (game->timer) {
+            free(game->timer);
+        }
 
+        Hades_DelHMap(game->objs);
         Hades_DelHMap(game->sprs);
         Hades_DelHMap(game->texs);
 
@@ -130,59 +130,65 @@ bool Hades_RunGame(Hades_Game* game)
         SDL_SetRenderDrawColor(game->renderer, 0xff, 0xff, 0xff, 0xff);
         SDL_RenderClear(game->renderer);
 
-        Hades_Iter* iter = Hades_IterHMap(game->sprs, Hades_FreeSprEntry);
+        Hades_Iter* iter = Hades_IterHMap(game->sprs);
         while (Hades_IterHasNext(iter)) {
             Hades_HMapEntry* entry = (Hades_HMapEntry*)
                 Hades_NextFromIter(iter);
-            Hades_Sprite spr = *(Hades_Sprite*) entry->value;
+            Hades_Sprite* spr = (Hades_Sprite*) entry->value;
 
             Hades_Texture* tex = (Hades_Texture*)
-                Hades_GetFromHMap(game->texs, &spr.tex);
-            int tw, th;
-            SDL_QueryTexture(tex->sdl, NULL, NULL, &tw, &th);
+                Hades_GetFromHMap(game->texs, &spr->tex);
 
             Hades_Color oldcol = {0, 0, 0};
             SDL_GetTextureColorMod(tex->sdl, &oldcol.r, &oldcol.g, &oldcol.b);
 
-            if (spr.SetTexture) {
-                spr.SetTexture(tex);
+            if (spr->SetTexture) {
+                spr->SetTexture(tex);
             }
-            Hades_RenderSpr(game, spr);
+            Hades_RenderSpr(game, *spr);
             SDL_SetTextureColorMod(tex->sdl, oldcol.r, oldcol.g, oldcol.b);
 
-            if (spr.Update) {
-                spr.Update(game, &spr);
+            if (spr->Update) {
+                spr->Update(game, spr);
             }
-            free(entry);
         }
         Hades_CloseIter(iter);
         iter = NULL;
         SDL_RenderPresent(game->renderer);
 
-        Hades_ObjStructIter* objIter = Hades_IterObjMap(game->objs);
-        while (objIter) {
-            Hades_ObjStruct* obj = Hades_NextObjStructFromIter(&objIter);
+        iter = Hades_IterHMap(game->objs);
+        while (Hades_IterHasNext(iter)) {
+            Hades_HMapEntry* entry =
+                (Hades_HMapEntry*) Hades_NextFromIter(iter);
+
+            Hades_Object* obj = (Hades_Object*) entry->value;
             if (obj->Update) {
-                obj->Update(game, obj->id);
+                obj->Update(game, obj);
             }
         }
-        Hades_CloseObjStructIter(&objIter);
+        Hades_CloseIter(iter);
+        iter = NULL;
 
-        Hades_ObjStructIter* outiter = Hades_IterObjMap(game->objs);
-        while (outiter) {
-            Hades_ObjStruct* this = Hades_NextObjStructFromIter(&outiter);
-            Hades_ObjStructIter* initer = Hades_CpObjStructIter(outiter);
-            while (initer) {
-                Hades_ObjStruct* other = Hades_NextObjStructFromIter(&initer);
+        iter = Hades_IterHMap(game->objs);
+        while (Hades_IterHasNext(iter)) {
+            Hades_Object* this;
+            this = (Hades_Object*)
+                ((Hades_HMapEntry*) Hades_NextFromIter(iter))->value;
 
-                if (Hades_CollidesWith(*this, *other)) {
+            Hades_Iter* initer = Hades_CpIter(iter);
+            while (Hades_IterHasNext(initer)) {
+                Hades_Object* other;
+                other = (Hades_Object*)
+                    ((Hades_HMapEntry*) Hades_NextFromIter(initer))->value;
+
+                if (Hades_ClsnWith(*this, *other)) {
                     if (!Hades_SetHasObj(this->clsnv, other->id)) {
 
                         if (this->OnClsnEnter) {
-                            this->OnClsnEnter(game, this->id, other->id);
+                            this->OnClsnEnter(game, this, other);
                         }
                         if (other->OnClsnEnter) {
-                            other->OnClsnEnter(game, other->id, this->id);
+                            other->OnClsnEnter(game, other, this);
                         }
                         Hades_AddObjToSet(this->clsnv, &(this->clsnc),
                                           other->id);
@@ -191,26 +197,27 @@ bool Hades_RunGame(Hades_Game* game)
 
                     } else {
                         if (this->OnClsnStay) {
-                            this->OnClsnStay(game, this->id, other->id);
+                            this->OnClsnStay(game, this, other);
                         }
                         if (other->OnClsnStay) {
-                            other->OnClsnStay(game, other->id, this->id);
+                            other->OnClsnStay(game, other, this);
                         }
                     }
                 } else if (Hades_SetHasObj(this->clsnv, other->id)) {
                     if (this->OnClsnExit) {
-                        this->OnClsnExit(game, this->id, other->id);
+                        this->OnClsnExit(game, this, other);
                     }
                     if (other->OnClsnExit) {
-                        other->OnClsnExit(game, other->id, this->id);
+                        other->OnClsnExit(game, other, this);
                     }
                     Hades_RmObjFromSet(this->clsnv, &(this->clsnc), other->id);
                     Hades_RmObjFromSet(other->clsnv, &(other->clsnc), this->id);
                 }
             }
-            Hades_CloseObjStructIter(&initer);
+            free(initer);
         }
-        Hades_CloseObjStructIter(&outiter);
+        Hades_CloseIter(iter);
+        iter=NULL;
 
         int ticks = Hades_GetTimerTicks(game->timer);
         if (ticks < game->max_tpf) {

@@ -5,7 +5,6 @@
 
 typedef struct Hades_Iter Hades_Iter;
 typedef struct Hades_IterNode Hades_IterNode;
-typedef void (*Hades_Consumer)(void*);
 
 /** defined in "hades_iter.h"
  * struct Hades_Iter;
@@ -17,7 +16,7 @@ typedef void (*Hades_Consumer)(void*);
  */
 struct Hades_Iter {
     Hades_IterNode* top;
-    Hades_Consumer FreeData;
+    Hades_IterNode* curr;
 };
 
 /** defined in "hades_iter.h"
@@ -32,18 +31,6 @@ struct Hades_IterNode {
     void* data;
     Hades_IterNode* next;
 };
-
-/** defined in "hades_iter.h"
- * Hades_Iter* Hades_NewIter(Hades_Consumer FreeData);
- *  Create a new iterator.
- *
- * Parameters:
- *  FreeData - deallocate data in a node
- *
- * Postconditions:
- *  If FreeNode is null, free is used.
- */
-Hades_Iter* Hades_NewIter(Hades_Consumer);
 
 /** defined in "hades_iter.h"
  * void Hades_CloseIter(Hades_Iter* iterator);
@@ -77,5 +64,14 @@ bool Hades_IterHasNext(Hades_Iter*);
  *  iterator isn't null and has a next item.
  */
 void* Hades_NextFromIter(Hades_Iter*);
+
+/** defined in "hades_iter.h"
+ * Hades_Iter* Hades_CpIter(Hades_Iter* iterator);
+ *  Create a shallow copy of iterator.
+ *
+ * Parameters:
+ *  iterator - to copy
+ */
+Hades_Iter* Hades_CpIter(Hades_Iter*);
 
 #endif

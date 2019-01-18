@@ -15,7 +15,7 @@ void Hades_ClearObjSet(Hades_ObjSetNode* set[], size_t* size)
     }
 }
 
-bool Hades_SetHasObj(Hades_ObjSetNode* set[], Hades_Object id)
+bool Hades_SetHasObj(Hades_ObjSetNode* set[], size_t id)
 {
     Hades_ObjSetNode* obj = NULL;
     obj = Hades_GetObjNodeFromSet(set, id, NULL);
@@ -25,8 +25,7 @@ bool Hades_SetHasObj(Hades_ObjSetNode* set[], Hades_Object id)
     return false;
 }
 
-bool Hades_AddObjToSet(Hades_ObjSetNode* set[], size_t* size,
-                       Hades_Object id)
+bool Hades_AddObjToSet(Hades_ObjSetNode* set[], size_t* size, size_t id)
 {
     if (Hades_GetObjNodeFromSet(set, id, NULL)) {
         return false;
@@ -40,8 +39,7 @@ bool Hades_AddObjToSet(Hades_ObjSetNode* set[], size_t* size,
     return true;
 }
 
-bool Hades_RmObjFromSet(Hades_ObjSetNode* set[], size_t* size,
-                        Hades_Object id)
+bool Hades_RmObjFromSet(Hades_ObjSetNode* set[], size_t* size, size_t id)
 {
     Hades_ObjSetNode* node = NULL,
                     * prev = NULL;
@@ -60,7 +58,7 @@ bool Hades_RmObjFromSet(Hades_ObjSetNode* set[], size_t* size,
 }
 
 Hades_ObjSetNode*
-Hades_GetObjNodeFromSet(Hades_ObjSetNode* set[], Hades_Object id,
+Hades_GetObjNodeFromSet(Hades_ObjSetNode* set[], size_t id,
                         Hades_ObjSetNode** prevptr)
 {
     int i = id % Hades_MaxBuckets;
@@ -78,49 +76,3 @@ Hades_GetObjNodeFromSet(Hades_ObjSetNode* set[], Hades_Object id,
     }
     return NULL;
 }
-
-/*Hades_ObjectSetNode* Hades_IterateObjectSet(Hades_ObjectSetNode* objects[])
-{
-    Hades_ObjectSetNode* head = NULL,
-                       * tail = NULL;
-
-    for (int i = 0; i < Hades_MaxBuckets; i++) {
-        Hades_ObjectSetNode* current = objects[i];
-        while (current) {
-            Hades_ObjectSetNode* temp;
-            temp = (Hades_ObjectSetNode*) malloc(sizeof(Hades_ObjectSetNode));
-            temp->object = current->object;
-
-            if (head) {
-                temp->next = tail->next;
-            } else {
-                temp->next = NULL;
-                head = temp;
-            }
-            tail = temp;
-
-            current = current->next;
-        }
-    }
-    return head;
-}
-
-Hades_ObjectSetNode* Hades_NextObjectNode(Hades_ObjectSetNode** iter)
-{
-    if (!(*iter)) {
-        return NULL;
-    }
-    Hades_ObjectSetNode* temp = *iter;
-    (*iter) = temp->next;
-    return temp;
-}
-
-void Hades_CloseObjectNodeIterator(HadesObjectSetNode** iter)
-{
-    while (*iter) {
-        Hades_ObjectSetNode* temp = *iter;
-        *iter = temp->next;
-        free(temp);
-    }
-}
-*/
