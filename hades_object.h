@@ -4,52 +4,129 @@
 #include <stdbool.h>
 #include <stdlib.h>
 
-typedef struct Hades_Object_ Hades_Object_;
-typedef struct Hades_ObjectIterator Hades_ObjectIterator;
-typedef struct Hades_ObjectSetNode Hades_ObjectSetNode;
+typedef struct Hades_Game Hades_Game;
 typedef int Hades_Object;
 
-typedef struct Hades_Game Hades_Game;
+/** Function type for collision functions */
+typedef void (*Hades_ClsnFunc)(Hades_Game*, Hades_Object, Hades_Object);
+/** Function type for object game-loop functions */
+typedef void (*Hades_ObjFunc)(Hades_Game*, Hades_Object);
 
-typedef void (Hades_CollisionFunction)(Hades_Game*, Hades_Object, Hades_Object);
-typedef void (Hades_ObjectUpdateFunction)(Hades_Game*, Hades_Object);
 
-Hades_Object Hades_CreateRectObject(Hades_Game*, int, int, size_t, size_t);
-bool Hades_DestroyObject(Hades_Game*, Hades_Object);
-bool Hades_DestroyObject_();
-bool Hades_SetObjectCollisionEnterFunction(Hades_Game*, Hades_Object,
-                                           Hades_CollisionFunction*);
-bool Hades_SetObjectCollisionStayFunction(Hades_Game*, Hades_Object,
-                                          Hades_CollisionFunction*);
-bool Hades_SetObjectCollisionExitFunction(Hades_Game*, Hades_Object,
-                                          Hades_CollisionFunction*);
-bool Hades_SetObjectUpdateFunction(Hades_Game*, Hades_Object,
-                                   Hades_ObjectUpdateFunction*);
+/** defined in "hades_object.h"
+ * Hades_Object Hades_NewRectObj(Hades_Game* game, int x, int y,
+ *                               size_t w, size_t h);
+ *  Create a rect object in the game.
+ *
+ * Parameters:
+ *  game - to contain the rect
+ *  x, y - upper left corner
+ *  w, h - width and height
+ *
+ * Postconditions
+ *  The object is given a unique id.
+ */
+Hades_Object Hades_NewRectObj(Hades_Game*, int, int, size_t, size_t);
 
-bool Hades_MoveObjectBy(Hades_Game*, Hades_Object, int, int);
-bool Hades_MoveObjectTo(Hades_Game*, Hades_Object, int, int);
+/** defined in "hades_object.h"
+ * bool Hades_RmObj(Hades_Game* game, Hades_Object object);
+ *  Remove an object from the game.
+ *
+ * Parameters:
+ *    game - contains the object
+ *  object - to remove
+ *
+ * Postconditions:
+ *  returns false if object doesn't exist in the game.
+ */
+bool Hades_RmObj(Hades_Game*, Hades_Object);
 
-void Hades_DestroyObjectMap(Hades_Object_*[], size_t*);
-Hades_Object_* Hades_GetObject(Hades_Object_*[], Hades_Object, Hades_Object_**);
-Hades_Object Hades_NextObject(Hades_Game*);
+/** defined in "hades_object.h"
+ * bool Hades_DefObjClsnEnter(Hades_Game* game, Hades_Object obj,
+ *                            Hades_ClsnFunc OnClsnEnter);
+ *  Define how an object acts when it enters a collision with another.
+ *
+ * Parameters
+ *         game - contains the object
+ *          obj - object to modify
+ *  OnClsnEnter - collision enter function
+ *
+ * Postconditions:
+ *  Returns false if obj doesn't exist in game.
+ */
+bool Hades_DefObjClsnEnter(Hades_Game*, Hades_Object, Hades_ClsnFunc);
 
-bool Hades_CollidesWith(const Hades_Object_, const Hades_Object_);
+/** defined in "hades_object.h"
+ * bool Hades_DefObjClsnStay(Hades_Game* game, Hades_Object obj,
+ *                           Hades_ClsnFunc OnClsnStay);
+ *  Define how an object acts when colliding with another.
+ *
+ * Parameters
+ *        game - contains the object
+ *         obj - object to modify
+ *  OnClsnStay - collision stay function
+ *
+ * Postconditions:
+ *  Returns false if obj doesn't exist in game.
+ */
+bool Hades_DefObjClsnStay(Hades_Game*, Hades_Object, Hades_ClsnFunc);
 
-Hades_ObjectIterator* Hades_IterateObjects(Hades_Object_*[]);
-void Hades_CloseObjectIterator(Hades_ObjectIterator**);
-Hades_Object_* Hades_NextObject_(Hades_ObjectIterator**);
-Hades_ObjectIterator* Hades_CopyObjectIterator(Hades_ObjectIterator*);
+/** defined in "hades_object.h"
+ * bool Hades_DefObjClsnExit(Hades_Game* game, Hades_Object obj,
+ *                           Hades_ClsnFunc OnClsnExit);
+ *  Define how on object acts when it stops colliding with another.
+ *
+ * Parameters:
+ *        game - contains the object
+ *         obj - object to modify
+ *  OnClsnExit - collision exit function
+ *
+ * Postconditions:
+ *  Returns false if obj doesn't exist in game.
+ */
+bool Hades_DefObjClsnExit(Hades_Game*, Hades_Object, Hades_ClsnFunc);
 
-void Hades_DestroyObjectSet(Hades_ObjectSetNode*[], size_t*);
-bool Hades_SetContainsObject(Hades_ObjectSetNode*[], Hades_Object);
-bool Hades_AddObjectToSet(Hades_ObjectSetNode*[], size_t*, Hades_Object);
-bool Hades_RemoveObjectFromSet(Hades_ObjectSetNode*[], size_t*, Hades_Object);
-Hades_ObjectSetNode*
-Hades_GetObjectNodeFromSet(Hades_ObjectSetNode*[], Hades_Object,
-                           Hades_ObjectSetNode**);
+/** defined in "hades_objet.h"
+ * bool Hades_DefObjUpdate(Hades_Game* game, Hades_Object obj,
+ *                         Hades_ObjFunc Update);
+ *  Define how an object behaves for each frame.
+ *
+ * Parameters:
+ *    game - contains the object
+ *     obj - object to modify
+ *  Update - update function
+ *
+ * Postconditions:
+ *  Returns false if obj doesn't exist in game.
+ */
+bool Hades_DefObjUpdate(Hades_Game*, Hades_Object, Hades_ObjFunc);
 
-Hades_ObjectSetNode* Hades_IterateObjectSet(Hades_ObjectSetNode*[]);
-Hades_ObjectSetNode* Hades_NextObjectNode(Hades_ObjectSetNode**);
-void Hades_CloseObjectNodeIterator(Hades_ObjectSetNode**);
+/** defined in "hades_object.h"
+ * bool Hades_MvObjBy(Hades_Game* game, Hades_Object obj, int dx, int dy);
+ *  Move an object by a displacement vector.
+ *
+ * Parameters:
+ *    game - contains the object
+ *     obj - object to move
+ *  dx, dy - displacement vector
+ *
+ * Postconditions:
+ *  Returns false if obj doesn't exist in game.
+ */
+bool Hades_MvObjBy(Hades_Game*, Hades_Object, int, int);
+
+/** defined in "hades_object.h"
+ * bool Hades_MvObjTo(Hades_Game* game, Hades_Object obj, int x, int y);
+ *  Move an object to a position.
+ *
+ * Parameters:
+ *  game - contains the object
+ *   obj - object to move
+ *  x, y - position to move to
+ *
+ * Postconditions:
+ *  Returns false if obj doesn't exist in game.
+ */
+bool Hades_MvObjTo(Hades_Game*, Hades_Object, int, int);
 
 #endif

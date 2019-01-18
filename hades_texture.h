@@ -1,44 +1,84 @@
-/** hades_texture.h
- * Hades interface for loading textures
- */
-
-/* Table of Contents
- *
- *  Hades_GetTextureCount    18
- *  Hades_LoadTexture        33
- */
-
 #ifndef HADES_TEXTURE_H
 #define HADES_TEXTURE_H
 
+#include "hades_structure.h"
 #include <stddef.h>
 #include <stdbool.h>
 #include <SDL2/SDL.h>
 
-typedef struct {
-    Uint8 r, g, b;
-} Hades_Color;
-
+typedef struct Hades_Color Hades_Color;
+typedef struct Hades_Texture Hades_Texture;
 typedef struct Hades_Game Hades_Game;
 
-/** Defined in "hades_texture.h"
- * size_t Hades_GetTextureCount(Hades_Game* game);
- *  Get the amount of texture currently loaded
+/** defined in "hades_texture.h"
+ * size_t Hades_NextTexID(Hades_Game* game);
+ *  Generate the next texture id.
  *
- * Parameters
- *  game - game to query
- *
- * Preconditions
- *  all textures have been added via Hades_LoadTexture
+ * Parameters:
+ *  game - to get id from
  *
  * Postconditions
- *  if game is null, returns 0
+ *  Each id is unique.
  */
-size_t Hades_GetTextureCount(Hades_Game*);
+size_t Hades_NextTexID(Hades_Game*);
+
+/** defined in "hades_texture.h"
+ * struct Hades_Color;
+ *  Stores color information
+ *
+ * Fields:
+ *  size_t r, g, b - color values for red green and blue respectively.
+ */
+struct Hades_Color {
+    uint8_t r, g, b;
+};
+
+/** defined in "hades_texture.h"
+ * struct Hades_Texture;
+ *  stores SDL_Texture information.
+ *
+ * Fields:
+ *         size_t id - of the texture
+ *  SDL_Texture* sdl - SDL information
+ */
+struct Hades_Texture {
+    size_t id;
+    SDL_Texture* sdl;
+};
+
+/** defined in "hades_texture.h"
+ * size_t Hades_HashTex(const void* texture);
+ *  hash a texture
+ *
+ * Parameters:
+ *  texture - to hash
+ *
+ * Postconditions:
+ *  if texture is null, returns 0.
+ */
+size_t Hades_HashTex(const void*);
+
+/** defined in "hades_texture.h"
+ * bool Hades_TexEq(const void* a, const void* b);
+ *  determine if two textures are equal
+ *
+ * Parameters:
+ *  a, b - ids of textures being compared
+ */
+bool Hades_TexEq(const void*, const void*);
 
 /** Defined in "hades_texture.h"
- * bool Hades_LoadTexture(Hades_Game* game, const char* path,
- *                        Hades_Color* colorkey);
+ * void Hades_FreeTex(void* texture);
+ *  Deallocate a Hades_Texture
+ *
+ * Parameters
+ *  texture - to free
+ */
+void Hades_FreeTex(void*);
+
+/** Defined in "hades_texture.h"
+ * size_t Hades_LoadTex(Hades_Game* game, const char* path,
+ *                      Hades_Color* colorkey);
  *  Load a texture into a game
  *
  * Parameters
@@ -51,18 +91,12 @@ size_t Hades_GetTextureCount(Hades_Game*);
  *  image in path is png
  *
  * Postconditions
- *  If successful, LoadTexture updates texture count and returns true.
+ *  Returns id of texture if successfull, otherwise returns 0 and sets
+ *  the corresponding error message.
  *
  *  When rendered, any parts of the texture with the same color as color key
  *  will not be shown. If colorkey is null, the colorkey won't be set.
- *
- *  The index used for the texture is the same as texture count before
- *  updating. The user is responsible for keeping track of what indeces
- *  correspond to what images.
- *
- *  If LoadTexture fails, it will return false and set the corresponding
- *  error message.
  */
-bool Hades_LoadTexture(Hades_Game*, const char*, Hades_Color*);
+size_t Hades_LoadTex(Hades_Game*, const char*, const Hades_Color*);
 
 #endif

@@ -1,64 +1,76 @@
-/** hades_game.h
- * Hades interface for building and running games
- */
-
-/* Table of Contents
- *
- * Constants    31
- * Hades_Game   37
- *
- * --- Creating and Deleting Games --- 65
- *
- * Hades_CreateGame   66
- * Hades_DestroyGame  91
- *
- * --- Game Functions --- 98
- *
- * Hades_RunGame 100
- *
- * --- Private Interface ---
- * 
- * Hades_NextIDFromGame
- */
-
 #ifndef HADES_GAME_H
 #define HADES_GAME_H
 
+#include "hades_structure.h"
 #include <SDL2/SDL.h>
 #include <stdbool.h>
 
+typedef struct Hades_HMap Hades_HMap;
+
 typedef struct Hades_Game Hades_Game;
-
-// ---------------------
-// - Private Interface -
-// ---------------------
-
-// --- Creating and Destroying Games ---
+typedef struct Hades_ObjStruct Hades_ObjStruct;
+typedef struct Hades_Timer Hades_Timer;
+typedef struct Hades_Sprite Hades_Sprite;
+typedef int Hades_Object;
 
 /** Defined in "hades_game.h"
- * Hades_Game* Hades_CreateGame(const char* title, int w, int h);
+ *  Hades_Game
  *
+ * Used to run a game
+ *
+ *  Fields
+ *
+ *             char title[] - title of the game window
+ *          SDL_Rect scrdim - dimensions of the game window
+ *       SDL_Window* window - points to the game window
+ *   SDL_Renderer* renderer - points to the renderer
+ */
+struct Hades_Game {
+    char title[Hades_MaxStrLength];
+    SDL_Rect scrdim;
+
+    SDL_Window* window;
+    SDL_Renderer* renderer;
+
+    size_t next_texID;
+    Hades_HMap* texs;
+
+    size_t next_sprID;
+    Hades_HMap* sprs;
+    /*size_t spritec;
+    Hades_SprStruct* sprites[Hades_MaxBuckets];*/
+
+    size_t next_objID;
+    size_t objc;
+    Hades_ObjStruct* objs[Hades_MaxBuckets];
+
+    size_t max_tpf;
+    Hades_Timer* timer;
+
+    void (*Start)(Hades_Game*);
+};
+
+/** Defined in "hades_game.h"
+ * Hades_Game* Hades_NewGame(const char* title, size_t w, size_t h);
  *  Create a new game.
  *
  *  Parameters
  *
  *   title - title for game window
- *       w - width of the screen
- *       h - height of the screen
+ *    w, h - width and height of the screen
  *
  *  Preconditions
  *   title doesn't exceed max length
- *   width and height are not negative
  *
  *  Postconditions
  *   If game can't be initialized properly, CreateGame will return null and
  *   set the corresponding error message.
  *
  *  Note
- *   Caller is responsible for using Hades_DestroyGame to safely destroy the
+ *   Caller is responsible for using Hades_DestroyGame to safely deallocate the
  *   game.
  */
-Hades_Game* Hades_CreateGame(const char*, int, int);
+Hades_Game* Hades_NewGame(const char*, size_t, size_t);
 
 /** Defined in "hades_game.h"
  * void Hades_DestroyGame(Hades_Game* game);
