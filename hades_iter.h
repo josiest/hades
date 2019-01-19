@@ -11,8 +11,8 @@ typedef struct Hades_IterNode Hades_IterNode;
  *  For iterating data structures.
  *
  * Fields
- *      Hades_IterNode* top - top node
- *  Hades_Consumer FreeData - deallocate the data in a node
+ *   Hades_IterNode* top - top node
+ *  Hades_IterNode* curr - current node
  */
 struct Hades_Iter {
     Hades_IterNode* top;

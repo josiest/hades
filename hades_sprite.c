@@ -84,11 +84,3 @@ size_t Hades_NextSprID(Hades_Game* game)
 {
     return (game->next_sprID)++;
 }
-
-void Hades_FreeSprEntry(void* ve)
-{
-    Hades_HMapEntry* e = (Hades_HMapEntry*) ve;
-    free(e->key);
-    Hades_FreeSpr(e->value);
-    free(e);
-}

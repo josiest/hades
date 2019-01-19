@@ -5,7 +5,6 @@
 void Hades_CloseIter(Hades_Iter* iter)
 {
     while (iter->top) {
-        free(iter->top->data);
         Hades_IterNode* tmp = iter->top;
         iter->top = iter->top->next;
         free(tmp);

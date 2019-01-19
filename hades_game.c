@@ -90,9 +90,9 @@ void Hades_DestroyGame(Hades_Game* game)
             free(game->timer);
         }
 
-        Hades_DelHMap(game->objs);
-        Hades_DelHMap(game->sprs);
-        Hades_DelHMap(game->texs);
+        Hades_FreeHMap(game->objs);
+        Hades_FreeHMap(game->sprs);
+        Hades_FreeHMap(game->texs);
 
         if (game->renderer) {
             SDL_DestroyRenderer(game->renderer);
@@ -130,38 +130,34 @@ bool Hades_RunGame(Hades_Game* game)
         SDL_SetRenderDrawColor(game->renderer, 0xff, 0xff, 0xff, 0xff);
         SDL_RenderClear(game->renderer);
 
-        Hades_Iter* iter = Hades_IterHMap(game->sprs);
+        Hades_Iter* iter = Hades_IterHMapVals(game->sprs);
         while (Hades_IterHasNext(iter)) {
-            Hades_HMapEntry* entry = (Hades_HMapEntry*)
-                Hades_NextFromIter(iter);
-            Hades_Sprite* spr = (Hades_Sprite*) entry->value;
+            Hades_Sprite spr = *(Hades_Sprite*) Hades_NextFromIter(iter);
 
             Hades_Texture* tex = (Hades_Texture*)
-                Hades_GetFromHMap(game->texs, &spr->tex);
+                Hades_GetFromHMap(game->texs, &spr.tex);
 
             Hades_Color oldcol = {0, 0, 0};
             SDL_GetTextureColorMod(tex->sdl, &oldcol.r, &oldcol.g, &oldcol.b);
 
-            if (spr->SetTexture) {
-                spr->SetTexture(tex);
+            if (spr.SetTexture) {
+                spr.SetTexture(tex);
             }
-            Hades_RenderSpr(game, *spr);
+            Hades_RenderSpr(game, spr);
             SDL_SetTextureColorMod(tex->sdl, oldcol.r, oldcol.g, oldcol.b);
 
-            if (spr->Update) {
-                spr->Update(game, spr);
+            if (spr.Update) {
+                spr.Update(game, &spr);
             }
         }
         Hades_CloseIter(iter);
         iter = NULL;
         SDL_RenderPresent(game->renderer);
 
-        iter = Hades_IterHMap(game->objs);
+        iter = Hades_IterHMapVals(game->objs);
         while (Hades_IterHasNext(iter)) {
-            Hades_HMapEntry* entry =
-                (Hades_HMapEntry*) Hades_NextFromIter(iter);
+            Hades_Object* obj = (Hades_Object*) Hades_NextFromIter(iter);
 
-            Hades_Object* obj = (Hades_Object*) entry->value;
             if (obj->Update) {
                 obj->Update(game, obj);
             }
@@ -169,17 +165,14 @@ bool Hades_RunGame(Hades_Game* game)
         Hades_CloseIter(iter);
         iter = NULL;
 
-        iter = Hades_IterHMap(game->objs);
+        iter = Hades_IterHMapVals(game->objs);
         while (Hades_IterHasNext(iter)) {
-            Hades_Object* this;
-            this = (Hades_Object*)
-                ((Hades_HMapEntry*) Hades_NextFromIter(iter))->value;
+            Hades_Object* this = (Hades_Object*) Hades_NextFromIter(iter);
 
             Hades_Iter* initer = Hades_CpIter(iter);
             while (Hades_IterHasNext(initer)) {
-                Hades_Object* other;
-                other = (Hades_Object*)
-                    ((Hades_HMapEntry*) Hades_NextFromIter(initer))->value;
+                Hades_Object* other =
+                    (Hades_Object*) Hades_NextFromIter(initer);
 
                 if (Hades_ClsnWith(*this, *other)) {
                     if (!Hades_SetHasObj(this->clsnv, other->id)) {

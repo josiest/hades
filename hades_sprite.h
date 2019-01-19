@@ -131,10 +131,4 @@ void Hades_RenderSpr(Hades_Game*, const Hades_Sprite);
  */
 size_t Hades_NextSprID(Hades_Game*);
 
-/** defined in "hades_sprite.h"
- * void Hades_FreeSprEntry(void* sprite)
- *  Deallocate a Sprite entry
- */
-void Hades_FreeSprEntry(void*);
-
 #endif

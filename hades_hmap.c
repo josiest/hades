@@ -5,12 +5,11 @@
 #include <stdio.h>
 
 Hades_HMap*
-Hades_NewHMap(const Hades_SizeFunc HashKey,
-              const Hades_BiPredicate AreKeysEqual,
+Hades_NewHMap(const Hades_SizeFunc HashKey, const Hades_BiPredicate KeyEq,
               const Hades_Consumer FreeKey, const Hades_Consumer FreeVal)
 {
     const Hades_HMap copy = {
-        0, {NULL}, HashKey, AreKeysEqual,
+        0, {NULL}, HashKey, KeyEq,
         FreeKey? FreeKey: free, FreeVal? FreeVal: free
     };
     Hades_HMap* map = (Hades_HMap*) malloc(sizeof(Hades_HMap));
@@ -18,7 +17,7 @@ Hades_NewHMap(const Hades_SizeFunc HashKey,
     return map;
 }
 
-void Hades_DelHMap(Hades_HMap* map)
+void Hades_FreeHMap(Hades_HMap* map)
 {
     for (int i = 0; i < Hades_HMapBuckets; i++) {
         Hades_HMapNode* top = map->buckets[i];
@@ -54,7 +53,7 @@ void* Hades_AddToHMap(Hades_HMap* map, void* key, void* value)
     return NULL;
 }
 
-Hades_HMapEntry* Hades_RmFromHMap(Hades_HMap* map, const void* key)
+void* Hades_RmFromHMap(Hades_HMap* map, const void* key)
 {
     Hades_HMapNode* node = Hades_GetNodeFromHMap(map, key);
     if (!node) {
@@ -70,13 +69,11 @@ Hades_HMapEntry* Hades_RmFromHMap(Hades_HMap* map, const void* key)
         node->next->prev = node->prev;
     }
 
-    const Hades_HMapEntry copy = {node->key, node->value};
-    Hades_HMapEntry* entry;
-    entry = (Hades_HMapEntry*) malloc(sizeof(Hades_HMapEntry));
-    memcpy(entry, &copy, sizeof(Hades_HMapEntry));
+    map->FreeKey(node->key);
+    void* val = node->value;
     free(node);
     map->size -= 1;
-    return entry;
+    return val;
 }
 
 void* Hades_GetFromHMap(const Hades_HMap* map, const void* key)
@@ -98,23 +95,18 @@ Hades_HMapNode* Hades_GetNodeFromHMap(const Hades_HMap* map, const void* key)
     return curr;
 }
 
-Hades_Iter* Hades_IterHMap(const Hades_HMap* map)
+Hades_Iter* Hades_IterHMapVals(const Hades_HMap* map)
 {
-    Hades_Iter itercpy = {NULL, NULL};
+    const Hades_Iter itercpy = {NULL, NULL};
     Hades_Iter* iter = (Hades_Iter*) malloc(sizeof(Hades_Iter));
     memcpy(iter, &itercpy, sizeof(Hades_Iter));
+
     for (int i = Hades_HMapBuckets-1; i >= 0; i--) {
         Hades_HMapNode* curr = map->buckets[i];
         while (curr) {
-            const Hades_HMapEntry ecpy = {curr->key, curr->value};
-            const Hades_IterNode nodecpy = {
-                malloc(sizeof(Hades_HMapEntry)), iter->top
-            };
-            memcpy(nodecpy.data, &ecpy, sizeof(Hades_HMapEntry));
-
+            const Hades_IterNode nodecpy = {curr->value, iter->top};
             iter->top = (Hades_IterNode*) malloc(sizeof(Hades_IterNode));
             memcpy(iter->top, &nodecpy, sizeof(Hades_IterNode));
-
             curr = curr->next;
         }
     }

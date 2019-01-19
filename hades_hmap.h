@@ -6,7 +6,6 @@
 
 typedef struct Hades_HMap Hades_HMap;
 typedef struct Hades_HMapNode Hades_HMapNode;
-typedef struct Hades_HMapEntry Hades_HMapEntry;
 typedef struct Hades_Iter Hades_Iter;
 
 typedef size_t (*Hades_SizeFunc)(const void*);
@@ -54,18 +53,6 @@ struct Hades_HMapNode {
 };
 
 /** defined in "hades_hmap.h"
- * struct Hades_HMapEntry;
- *  A key-value pair of a map.
- *
- * Fields
- *  void* key, * value - the key-value pair
- */
-struct Hades_HMapEntry {
-    void* key;
-    void* value;
-};
-
-/** defined in "hades_hmap.h"
  * Hades_HMap*
  * Hades_NewHMap(const Hades_SizeFunc HashKey,
  *               const Hades_BiPredicate AreKeysEqual,
@@ -82,19 +69,19 @@ struct Hades_HMapEntry {
  *  HashKey and AreKeysEqual are not null.
  *
  * Postconditions:
- *  If FreeKey and FreeVal are NULL, free will be used.
+ *  If FreeKey or FreeVal are NULL, free will be used for it.
  */
 Hades_HMap* Hades_NewHMap(const Hades_SizeFunc, const Hades_BiPredicate,
                           const Hades_Consumer, const Hades_Consumer);
 
 /** defined in "hades_hmap.h"
- * void Hades_DelHMap(Hades_HMap* map);
- *  Delete a hash map.
+ * void Hades_FreeHMap(Hades_HMap* map);
+ *  Deallocate map.
  * 
  * Parameters:
- *  map - to delete
+ *  map - to deallocate
  */
-void Hades_DelHMap(Hades_HMap*);
+void Hades_FreeHMap(Hades_HMap*);
 
 /** defined in "hades_hmap.h"
  * bool Hades_HMapHasKey(const Hades_HMap* map, const void* key);
@@ -122,18 +109,18 @@ bool Hades_HMapHasKey(const Hades_HMap*, const void*);
 void* Hades_AddToHMap(Hades_HMap*, void*, void*);
 
 /** defined in "hades_hmap.h"
- * Hades_HMapEntry* Hades_RmFromHMap(Hades_HMap* map, void* key);
+ * void* Hades_RmFromHMap(Hades_HMap* map, const void* key);
  *  Remove an association from a hash map.
  *
  * Parameters:
- *       map - remove from
- *       key - of entry to remove
+ *  map - remove from
+ *  key - of entry to remove
  *
  * Postconditions:
- *  Returns the entry that was associated with the key, or NULL if key doesn't
- *  exist in map.
+ *  Returns the value that was associated with key. Returns null if key
+ *  doesn't exist in map.
  */
-Hades_HMapEntry* Hades_RmFromHMap(Hades_HMap*, const void*);
+void* Hades_RmFromHMap(Hades_HMap*, const void*);
 
 /** defined in "hades_hmap.h"
  * void* Hades_GetFromHMap(const Hades_HMap* map, const void* key);
@@ -163,15 +150,12 @@ void* Hades_GetFromHMap(const Hades_HMap*, const void*);
 Hades_HMapNode* Hades_GetNodeFromHMap(const Hades_HMap*, const void*);
 
 /** defined in "hades_hmap.h"
- * Hades_Iter* Hades_IterHMap(const Hades_HMap* map);
- *  Iterate the entries in a map.
+ * Hades_Iter* Hades_IterHMapVals(const Hades_HMap* map);
+ *  Iterate the values in a map.
  *
  * Parameters:
  *  map - to iterate
- *
- * Postconditions:
- *  The iterator returned iterates HMapEntries
  */
-Hades_Iter* Hades_IterHMap(const Hades_HMap*);
+Hades_Iter* Hades_IterHMapVals(const Hades_HMap*);
 
 #endif
