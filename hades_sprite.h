@@ -6,8 +6,7 @@
 
 typedef struct Hades_Sprite Hades_Sprite;
 typedef struct Hades_Game Hades_Game;
-typedef struct Hades_Texture Hades_Texture;
-typedef void (*Hades_TexFunc)(Hades_Texture*);
+typedef void (*Hades_TexFunc)(SDL_Texture*);
 typedef void (*Hades_SprFunc)(Hades_Game*, Hades_Sprite*);
 
 /** defined in "hades_sprite.h"
@@ -28,24 +27,6 @@ struct Hades_Sprite {
     Hades_TexFunc SetTexture;
     Hades_SprFunc Update;
 };
-
-/** defined in "hades_sprite.h"
- * size_t Hades_HashSpr(const void* sprite);
- *  Hash a sprite
- *
- * Parameters:
- *  sprite - to hash
- */
-size_t Hades_HashSpr(const void*);
-
-/** defined in "hades_sprite.h"
- * bool Hades_SprEq(void* a, void* b);
- *  Compare two sprites for equality
- *
- * Parameters:
- *  a, b - the two sprites to comare
- */
-bool Hades_SprEq(const void*, const void*);
 
 /** defined in "hades_sprite.h"
  * Hades_Sprite* Hades_NewSpr(Hades_Game* game, size_t tex,
@@ -78,7 +59,7 @@ Hades_Sprite* Hades_NewSpr(Hades_Game*, size_t,
 void Hades_FreeSpr(void*);
 
 /** defined in "hades_sprite.h"
- * void Hades_MvSprBy(const Hades_Sprite sprite, int dx, int dy);
+ * void Hades_MvSprBy(Hades_Sprite sprite, int dx, int dy);
  *  Move a sprite by dx and dy pixels
  *
  * Parameters
@@ -91,10 +72,10 @@ void Hades_FreeSpr(void*);
  * Postconditions
  *  Returns false if sprite doesn't exist in game.
  */
-void Hades_MvSprBy(const Hades_Sprite, int, int);
+void Hades_MvSprBy(Hades_Sprite, int, int);
 
 /** defined in "hades_sprite.h"
- * void Hades_MvSprTo(const Hades_Sprite sprite, int x, int y);
+ * void Hades_MvSprTo(Hades_Sprite sprite, int x, int y);
  *  Move a sprite to a position.
  *
  * Parameters:
@@ -104,7 +85,7 @@ void Hades_MvSprBy(const Hades_Sprite, int, int);
  * Preconditions:
  *  sprite isn't null
  */
-void Hades_MvSprTo(const Hades_Sprite, int, int);
+void Hades_MvSprTo(Hades_Sprite, int, int);
 
 /** defined in "hades_sprite.h"
  * void Hades_RenderSpr(Hades_Game* game, const Hades_Sprite sprite);

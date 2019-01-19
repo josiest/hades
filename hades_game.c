@@ -66,19 +66,32 @@ Hades_Game* Hades_NewGame(const char* title, size_t w, size_t h)
     SDL_SetRenderDrawColor(game->renderer, 0xff, 0xff, 0xff, 0xff);
 
     game->next_texID = 1;
-    game->texs = Hades_NewHMap(Hades_HashTex, Hades_TexEq,
-                               NULL, Hades_FreeTex);
+    if ((game->texs = Hades_NewHMap(NULL, NULL, NULL, Hades_FreeTex))
+            == NULL) {
+        Hades_DestroyGame(game);
+        return NULL;
+    }
 
     game->next_sprID = 1;
-    game->sprs = Hades_NewHMap(Hades_HashSpr, Hades_SprEq,
-                               NULL, Hades_FreeSpr);
+    if ((game->sprs = Hades_NewHMap(NULL, NULL, NULL, Hades_FreeSpr))
+            == NULL) {
+        Hades_DestroyGame(game);
+        return NULL;
+    }
 
     game->next_objID = 1;
-    game->objs = Hades_NewHMap(Hades_HashObj, Hades_ObjEq,
-                               NULL, Hades_FreeObj);
+    if ((game->objs = Hades_NewHMap(NULL, NULL, NULL, Hades_FreeObj))
+           == NULL) {
+        Hades_DestroyGame(game);
+        return NULL;
+    }
 
-    game->timer = Hades_CreateTimer();
-    game->max_tpf = 1000/60;
+    if ((game->timer = Hades_CreateTimer()) != NULL) {
+        game->max_tpf = 1000/60;
+    } else {
+        Hades_DestroyGame(game);
+        return NULL;
+    }
 
     return game;
 }
@@ -134,17 +147,17 @@ bool Hades_RunGame(Hades_Game* game)
         while (Hades_IterHasNext(iter)) {
             Hades_Sprite spr = *(Hades_Sprite*) Hades_NextFromIter(iter);
 
-            Hades_Texture* tex = (Hades_Texture*)
+            SDL_Texture* tex = (SDL_Texture*)
                 Hades_GetFromHMap(game->texs, &spr.tex);
 
             Hades_Color oldcol = {0, 0, 0};
-            SDL_GetTextureColorMod(tex->sdl, &oldcol.r, &oldcol.g, &oldcol.b);
+            SDL_GetTextureColorMod(tex, &oldcol.r, &oldcol.g, &oldcol.b);
 
             if (spr.SetTexture) {
                 spr.SetTexture(tex);
             }
             Hades_RenderSpr(game, spr);
-            SDL_SetTextureColorMod(tex->sdl, oldcol.r, oldcol.g, oldcol.b);
+            SDL_SetTextureColorMod(tex, oldcol.r, oldcol.g, oldcol.b);
 
             if (spr.Update) {
                 spr.Update(game, &spr);

@@ -53,9 +53,26 @@ struct Hades_HMapNode {
 };
 
 /** defined in "hades_hmap.h"
+ * size_t Hades_HashID(const void* id);
+ *  Hash id (size_t).
+ *
+ * Parameters:
+ *  id - to hash
+ */
+size_t Hades_HashID(const void*);
+
+/** defined in "hades_hmap.h"
+ * bool Hades_IDEq(const void* a, const void* b);
+ *  Compare two ids (size_t) for equality.
+ *
+ * Parametetrs:
+ *  a, b - the ids to compare
+ */
+bool Hades_IDEq(const void*, const void*);
+
+/** defined in "hades_hmap.h"
  * Hades_HMap*
- * Hades_NewHMap(const Hades_SizeFunc HashKey,
- *               const Hades_BiPredicate AreKeysEqual,
+ * Hades_NewHMap(const Hades_SizeFunc HashKey, const Hades_BiPredicate KeyEq,
  *               const Hades_Consumer FreeKey, const Hades_Consumer FreeVal);
  *  Create a new hash map.
  *
@@ -65,11 +82,9 @@ struct Hades_HMapNode {
  *       FreeKey - deallocate a key
  *       FreeVal - deallocate a value
  *
- * Preconditions:
- *  HashKey and AreKeysEqual are not null.
- *
  * Postconditions:
- *  If FreeKey or FreeVal are NULL, free will be used for it.
+ *  If HashKey is null, HashID will be used. If KeyEq is Null IDEq will be
+ *  used. If FreeKey or FreeVal are NULL, free will be used.
  */
 Hades_HMap* Hades_NewHMap(const Hades_SizeFunc, const Hades_BiPredicate,
                           const Hades_Consumer, const Hades_Consumer);

@@ -9,9 +9,9 @@
 
 // R1 Functions
 
-void Test_R1SetTexture(Hades_Texture* tex)
+void Test_R1SetTexture(SDL_Texture* tex)
 {
-    SDL_SetTextureColorMod(tex->sdl, 255, 0, 0);
+    SDL_SetTextureColorMod(tex, 255, 0, 0);
 }
 
 void Test_R1OnClsnEnter(Hades_Game* game, Hades_Object* this,
@@ -48,9 +48,9 @@ void Test_R1UpdateObject(Hades_Game* game, Hades_Object* object)
 
 // R2 Functions
 
-void Test_R2SetTexture(Hades_Texture* tex)
+void Test_R2SetTexture(SDL_Texture* tex)
 {
-    SDL_SetTextureColorMod(tex->sdl, 0, 0, 255);
+    SDL_SetTextureColorMod(tex, 0, 0, 255);
 }
 
 void Test_R2OnClsnStay(Hades_Game* game, Hades_Object* this,
