@@ -1,7 +1,6 @@
 #ifndef HADES_TEXTURE_H
 #define HADES_TEXTURE_H
 
-#include "hades_structure.h"
 #include <stddef.h>
 #include <stdbool.h>
 #include <SDL2/SDL.h>

@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <SDL2/SDL.h>
 #include "hades_game.h"
-#include "hades_structure.h"
 #include "hades_texture.h"
 #include "hades_sprite.h"
 #include "hades_object.h"

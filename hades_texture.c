@@ -1,6 +1,5 @@
 #include "hades_texture.h"
 #include "hades_hmap.h"
-#include "hades_structure.h"
 #include "hades_game.h"
 #include "hades_error.h"
 #include <SDL2/SDL.h>

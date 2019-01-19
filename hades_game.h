@@ -1,7 +1,6 @@
 #ifndef HADES_GAME_H
 #define HADES_GAME_H
 
-#include "hades_structure.h"
 #include <SDL2/SDL.h>
 #include <stdbool.h>
 
@@ -9,6 +8,10 @@ typedef struct Hades_HMap Hades_HMap;
 
 typedef struct Hades_Game Hades_Game;
 typedef struct Hades_Timer Hades_Timer;
+
+enum {
+    Hades_MaxStrLength = 1000,
+};
 
 /** Defined in "hades_game.h"
  *  Hades_Game

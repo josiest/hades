@@ -1,7 +1,6 @@
 #ifndef HADES_OBJSET_H
 #define HADES_OBJSET_H
 
-#include "hades_structure.h"
 #include <stddef.h>
 #include <stdbool.h>
 
