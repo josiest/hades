@@ -51,7 +51,8 @@ bool Hades_HMapHasKey(const Hades_HMap* map, const void* key)
     return Hades_GetNodeFromHMap(map, key) != NULL;
 }
 
-void* Hades_AddToHMap(Hades_HMap* map, void* key, void* value)
+void* Hades_AddToHMap(Hades_HMap* map, const void* key, size_t keysz,
+                      void* value)
 {
     if (!map) {
         Hades_SetGameError("AddToHMap was called with a null map");
@@ -64,14 +65,19 @@ void* Hades_AddToHMap(Hades_HMap* map, void* key, void* value)
         return oldval;
     }
     const size_t i = map->HashKey(key) % Hades_HMapBuckets;
-    const Hades_HMapNode copy = {key, value, NULL, map->buckets[i]};
+    printf("adding to map at %ld\n", i);
+    Hades_HMapNode copy = {malloc(keysz), value, NULL, map->buckets[i]};
+    memcpy(copy.key, key, keysz);
     if ((map->buckets[i] = (Hades_HMapNode*) malloc(sizeof(Hades_HMapNode)))
-            != NULL) {
-        memcpy(map->buckets[i], &copy, sizeof(Hades_HMapNode));
-        map->size += 1;
-    } else {
-        Hades_SetGameError("Ran out of memory when trying to add to map");
+            == NULL) {
+        free(copy.key);
+        return NULL;
     }
+    memcpy(map->buckets[i], &copy, sizeof(Hades_HMapNode));
+    if (map->buckets[i]->next) {
+        map->buckets[i]->next->prev = map->buckets[i];
+    }
+    map->size += 1;
     return NULL;
 }
 

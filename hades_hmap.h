@@ -92,19 +92,21 @@ void Hades_FreeHMap(Hades_HMap*);
 bool Hades_HMapHasKey(const Hades_HMap*, const void*);
 
 /** defined in "hades_hmap.h"
- * void* Hades_AddToHMap(Hades_HMap* map, void* key, void* value);
+ * void* Hades_AddToHMap(Hades_HMap* map, const void* key, size_t keysize,
+ *                       void* value);
  *  Associate a key with a value in a map.
  *
  * Parameters:
- *     map - add to
- *     key - associate with a value
- *   value - associate with a key
+ *      map - add to
+ *      key - associate with a value
+ *  keysize - memory size of key
+ *    value - associate with a key
  *
  * Postconditions:
  *  Returns null if no value previously associated with that key - otherwise
  *  returns pointer to value previously associated with the key.
  */
-void* Hades_AddToHMap(Hades_HMap*, void*, void*);
+void* Hades_AddToHMap(Hades_HMap*, const void*, size_t, void*);
 
 /** defined in "hades_hmap.h"
  * void* Hades_RmFromHMap(Hades_HMap* map, const void* key);

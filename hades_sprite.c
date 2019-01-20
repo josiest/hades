@@ -42,14 +42,7 @@ Hades_Sprite* Hades_NewSpr(Hades_Game* game, size_t tex,
             return NULL;
         }
     }
-    size_t* idp;
-    if ((idp = (size_t*) malloc(sizeof(size_t))) != NULL) {
-        *idp = spr->id;
-        Hades_AddToHMap(game->sprs, idp, spr);
-    } else {
-        Hades_SetGameError("Ran out of memory");
-        return NULL;
-    }
+    Hades_AddToHMap(game->sprs, &spr->id, sizeof(size_t), spr);
     return spr;
 }
 

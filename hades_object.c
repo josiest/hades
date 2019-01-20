@@ -18,9 +18,7 @@ Hades_Object* Hades_NewRectObj(Hades_Game* game, int x, int y,
     obj = (Hades_Object*) malloc(sizeof(Hades_Object));
     memcpy(obj, &objcpy, sizeof(Hades_Object));
 
-    void* idp = malloc(sizeof(size_t));
-    memcpy(idp, &obj->id, sizeof(size_t));
-    Hades_AddToHMap(game->objs, idp, obj);
+    Hades_AddToHMap(game->objs, &obj->id, sizeof(size_t), obj);
 
     return obj;
 }

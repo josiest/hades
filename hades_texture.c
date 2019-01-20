@@ -6,6 +6,7 @@
 #include <SDL2/SDL_image.h>
 #include <stdbool.h>
 #include <stdlib.h>
+#include <stdio.h>
 
 size_t Hades_NextTexID(Hades_Game* game)
 {
@@ -45,9 +46,7 @@ size_t Hades_LoadTex(Hades_Game* game, const char* path,
         return 0;
     }
 
-    size_t* idp = (size_t*) malloc(sizeof(size_t));
-    *idp = Hades_NextTexID(game);
-
-    Hades_AddToHMap(game->texs, idp, tex);
-    return *idp;
+    const size_t id = Hades_NextTexID(game);
+    Hades_AddToHMap(game->texs, &id, sizeof(size_t), tex);
+    return id;
 }
