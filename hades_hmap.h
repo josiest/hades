@@ -1,6 +1,7 @@
 #ifndef HADES_HMAP_H
 #define HADES_HMAP_H
 
+#include "hades_stdhash.h"
 #include <stddef.h>
 #include <stdbool.h>
 
@@ -51,24 +52,6 @@ struct Hades_HMapNode {
     Hades_HMapNode* prev;
     Hades_HMapNode* next;
 };
-
-/** defined in "hades_hmap.h"
- * size_t Hades_HashID(const void* id);
- *  Hash id (size_t).
- *
- * Parameters:
- *  id - to hash
- */
-size_t Hades_HashID(const void*);
-
-/** defined in "hades_hmap.h"
- * bool Hades_IDEq(const void* a, const void* b);
- *  Compare two ids (size_t) for equality.
- *
- * Parametetrs:
- *  a, b - the ids to compare
- */
-bool Hades_IDEq(const void*, const void*);
 
 /** defined in "hades_hmap.h"
  * Hades_HMap*

@@ -1,4 +1,7 @@
 #include "hades_objset.h"
+#include "hades_stdhash.h"
+#include <stdlib.h>
+#include <string.h>
 
 void Hades_ClearObjSet(Hades_ObjSetNode* set[], size_t* size)
 {

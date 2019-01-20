@@ -1,19 +1,10 @@
 #include "hades_hmap.h"
+#include "hades_stdhash.h"
 #include "hades_iter.h"
 #include "hades_error.h"
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
-
-size_t Hades_HashID(const void* id)
-{
-    return *(const size_t*)id % Hades_HMapBuckets;
-}
-
-bool Hades_IDEq(const void* a, const void* b)
-{
-    return *(const size_t*)a == *(const size_t*)b;
-}
 
 Hades_HMap*
 Hades_NewHMap(const Hades_SizeFunc HashKey, const Hades_BiPredicate KeyEq,

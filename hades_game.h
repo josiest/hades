@@ -1,6 +1,7 @@
 #ifndef HADES_GAME_H
 #define HADES_GAME_H
 
+#include "hades_stdhash.h"
 #include <SDL2/SDL.h>
 #include <stdbool.h>
 

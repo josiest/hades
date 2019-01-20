@@ -1,6 +1,7 @@
 #ifndef HADES_OBJECT_H
 #define HADES_OBJECT_H
 
+#include "hades_stdhash.h"
 #include <stdbool.h>
 #include <stdlib.h>
 
@@ -118,23 +119,6 @@ bool Hades_MvObjTo(Hades_Object*, int, int);
  *  Every id is unique.
  */
 size_t Hades_NextObjID(Hades_Game* game);
-/** defined in "hades_object.h"
- * size_t Hades_HashObj(const void* object);
- *  Hash an object
- *
- * Parameters
- *  object - to hash
- */
-size_t Hades_HashObj(const void*);
-
-/** defined in "hades_object.h"
- * bool Hades_ObjsEq(const void* a, const void* b);
- *  Compare to objects for equality
- *
- * Parameters
- *  a, b - the objects to compare
- */
-bool Hades_ObjEq(const void*, const void*);
 
 /** defined in "hades_object.h"
  * bool Hades_ClsnWith(const Hades_Object this, const Hades_Object other);

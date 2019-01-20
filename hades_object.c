@@ -1,5 +1,6 @@
 #include "hades_object.h"
 #include "hades_objset.h"
+#include "hades_stdhash.h"
 #include "hades_hmap.h"
 #include "hades_game.h"
 #include <string.h>
