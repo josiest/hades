@@ -1,7 +1,6 @@
 #include "hades_object.h"
-#include "hades_objset.h"
-#include "hades_stdhash.h"
 #include "hades_hmap.h"
+#include "hades_hset.h"
 #include "hades_game.h"
 #include <string.h>
 #include <stdio.h>
@@ -10,14 +9,21 @@
 Hades_Object* Hades_NewRectObj(Hades_Game* game, int x, int y,
                                size_t w, size_t h)
 {
-    Hades_Object objcpy = {
+    Hades_Object* obj = (Hades_Object*) malloc(sizeof(Hades_Object));
+    if (NULL == obj) {
+        puts("Ran out of memory when creating new rect object");
+        return NULL;
+    }
+    const Hades_Object objcpy = {
         Hades_NextObjID(game), x, y, w, h,
-        0, {NULL}, NULL, NULL, NULL, NULL
+        Hades_NewHSet(NULL, NULL, NULL), NULL, NULL, NULL, NULL
     };
-    Hades_Object* obj;
-    obj = (Hades_Object*) malloc(sizeof(Hades_Object));
+    if (NULL == objcpy.clsns) {
+        puts("Ran out of memory when creating new rect object");
+        free(obj);
+        return NULL;
+    }
     memcpy(obj, &objcpy, sizeof(Hades_Object));
-
     Hades_AddToHMap(game->objs, &obj->id, sizeof(size_t), obj);
 
     return obj;
@@ -26,7 +32,7 @@ Hades_Object* Hades_NewRectObj(Hades_Game* game, int x, int y,
 void Hades_FreeObj(void* vobj)
 {
     Hades_Object* obj = (Hades_Object*) vobj;
-    Hades_ClearObjSet(obj->clsnv, &obj->clsnc);
+    Hades_FreeHSet(obj->clsns);
     free(obj);
 }
 

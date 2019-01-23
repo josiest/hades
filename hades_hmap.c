@@ -48,32 +48,37 @@ bool Hades_HMapHasKey(const Hades_HMap* map, const void* key)
         Hades_SetGameError("HMapHasKey was called with a null map");
         return false;
     }
-    return Hades_GetNodeFromHMap(map, key) != NULL;
+    return Hades_GetHMapNode(map, key) != NULL;
 }
 
 void* Hades_AddToHMap(Hades_HMap* map, const void* key, size_t keysz,
                       void* value)
 {
-    if (!map) {
-        Hades_SetGameError("AddToHMap was called with a null map");
+    if (NULL == map) {
+        puts("AddToHMap was called with a null map");
         return NULL;
     }
-    Hades_HMapNode* node = Hades_GetNodeFromHMap(map, key);
+    Hades_HMapNode* node = Hades_GetHMapNode(map, key);
     if (node != NULL) {
         void* oldval = node->value;
         node->value = value;
         return oldval;
     }
     const size_t i = map->HashKey(key) % Hades_HMapBuckets;
-    printf("adding to map at %ld\n", i);
-    Hades_HMapNode copy = {malloc(keysz), value, NULL, map->buckets[i]};
-    memcpy(copy.key, key, keysz);
-    if ((map->buckets[i] = (Hades_HMapNode*) malloc(sizeof(Hades_HMapNode)))
-            == NULL) {
-        free(copy.key);
+    Hades_HMapNode ncpy = {malloc(keysz), value, NULL, map->buckets[i]};
+    if (NULL == ncpy.key) {
+        puts("Ran out of memory when allocating key for hmap");
         return NULL;
     }
-    memcpy(map->buckets[i], &copy, sizeof(Hades_HMapNode));
+    memcpy(ncpy.key, key, keysz);
+    map->buckets[i] = (Hades_HMapNode*) malloc(sizeof(Hades_HMapNode));
+    if (NULL == map->buckets[i]) {
+        puts("Ran out of memory when allocating node for hmap");
+        map->buckets[i] = ncpy.next;
+        free(ncpy.key);
+        return NULL;
+    }
+    memcpy(map->buckets[i], &ncpy, sizeof(Hades_HMapNode));
     if (map->buckets[i]->next) {
         map->buckets[i]->next->prev = map->buckets[i];
     }
@@ -86,7 +91,7 @@ void* Hades_RmFromHMap(Hades_HMap* map, const void* key)
     if (!map) {
         Hades_SetGameError("RmFromHMap was called with a null map");
     }
-    Hades_HMapNode* node = Hades_GetNodeFromHMap(map, key);
+    Hades_HMapNode* node = Hades_GetHMapNode(map, key);
     if (!node) {
         return NULL;
     }
@@ -112,14 +117,14 @@ void* Hades_GetFromHMap(const Hades_HMap* map, const void* key)
     if (!map) {
         Hades_SetGameError("GetFromHMap was called with a null map");
     }
-    Hades_HMapNode* node = Hades_GetNodeFromHMap(map, key);
+    Hades_HMapNode* node = Hades_GetHMapNode(map, key);
     if (!node) {
         return NULL;
     }
     return node->value;
 }
 
-Hades_HMapNode* Hades_GetNodeFromHMap(const Hades_HMap* map, const void* key)
+Hades_HMapNode* Hades_GetHMapNode(const Hades_HMap* map, const void* key)
 {
     size_t i = map->HashKey(key) % Hades_HMapBuckets;
     Hades_HMapNode* curr = map->buckets[i];

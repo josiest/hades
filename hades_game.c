@@ -15,12 +15,12 @@
 
 #include "hades_game.h"
 #include "hades_hmap.h"
+#include "hades_hset.h"
 #include "hades_iter.h"
 #include "hades_error.h"
 #include "hades_texture.h"
 #include "hades_sprite.h"
 #include "hades_object.h"
-#include "hades_objset.h"
 #include "hades_timer.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -187,36 +187,35 @@ bool Hades_RunGame(Hades_Game* game)
                     (Hades_Object*) Hades_NextFromIter(initer);
 
                 if (Hades_ClsnWith(*this, *other)) {
-                    if (!Hades_SetHasObj(this->clsnv, other->id)) {
-
-                        if (this->OnClsnEnter) {
-                            this->OnClsnEnter(game, this, other);
-                        }
-                        if (other->OnClsnEnter) {
-                            other->OnClsnEnter(game, other, this);
-                        }
-                        Hades_AddObjToSet(this->clsnv, &(this->clsnc),
-                                          other->id);
-                        Hades_AddObjToSet(other->clsnv, &(other->clsnc),
-                                          this->id);
-
-                    } else {
+                    if (Hades_HSetHas(this->clsns, &other->id)) {
                         if (this->OnClsnStay) {
                             this->OnClsnStay(game, this, other);
                         }
                         if (other->OnClsnStay) {
                             other->OnClsnStay(game, other, this);
                         }
+
+                    } else {
+                        if (this->OnClsnEnter) {
+                            this->OnClsnEnter(game, this, other);
+                        }
+                        if (other->OnClsnEnter) {
+                            other->OnClsnEnter(game, other, this);
+                        }
+                        Hades_AddToHSet(this->clsns, &other->id,
+                                        sizeof(size_t));
+                        Hades_AddToHSet(other->clsns, &this->id,
+                                        sizeof(size_t));
                     }
-                } else if (Hades_SetHasObj(this->clsnv, other->id)) {
+                } else if (Hades_HSetHas(this->clsns, &other->id)) {
                     if (this->OnClsnExit) {
                         this->OnClsnExit(game, this, other);
                     }
                     if (other->OnClsnExit) {
                         other->OnClsnExit(game, other, this);
                     }
-                    Hades_RmObjFromSet(this->clsnv, &(this->clsnc), other->id);
-                    Hades_RmObjFromSet(other->clsnv, &(other->clsnc), this->id);
+                    Hades_RmFromHSet(this->clsns, &other->id);
+                    Hades_RmFromHSet(other->clsns, &this->id);
                 }
             }
             free(initer);

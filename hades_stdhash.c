@@ -1,4 +1,5 @@
 #include "hades_stdhash.h"
+#include <stdio.h>
 
 size_t Hades_HashID(const void* id)
 {

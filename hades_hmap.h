@@ -137,7 +137,7 @@ void* Hades_GetFromHMap(const Hades_HMap*, const void*);
 
 /** defined in "hades_hmap.h"
  * Hades_HMapNode*
- * Hades_GetNodeFromHMap(const Hades_HMap* map, const void* key);
+ * Hades_GetHMapNode(const Hades_HMap* map, const void* key);
  *  Get a node from a hash map via an associated key.
  *
  * Parameters:
@@ -147,7 +147,7 @@ void* Hades_GetFromHMap(const Hades_HMap*, const void*);
  * Postconditions:
  *  Returns null if key doesn't exist in map.
  */
-Hades_HMapNode* Hades_GetNodeFromHMap(const Hades_HMap*, const void*);
+Hades_HMapNode* Hades_GetHMapNode(const Hades_HMap*, const void*);
 
 /** defined in "hades_hmap.h"
  * Hades_Iter* Hades_IterHMapVals(const Hades_HMap* map);

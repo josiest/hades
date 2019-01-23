@@ -1,12 +1,12 @@
 #ifndef HADES_OBJECT_H
 #define HADES_OBJECT_H
 
-#include "hades_stdhash.h"
 #include <stdbool.h>
 #include <stdlib.h>
 
 typedef struct Hades_Object Hades_Object;
 typedef struct Hades_ObjSetNode Hades_ObjSetNode;
+typedef struct Hades_HSet Hades_HSet;
 typedef struct Hades_Game Hades_Game;
 
 typedef void (*Hades_ClsnFunc)(Hades_Game*, Hades_Object*, Hades_Object*);
@@ -45,8 +45,7 @@ struct Hades_Object {
     int x, y;
     size_t w, h;
 
-    size_t clsnc;
-    Hades_ObjSetNode* clsnv[Hades_MaxBuckets];
+    Hades_HSet* clsns;
 
     Hades_ClsnFunc OnClsnEnter,
                    OnClsnStay,

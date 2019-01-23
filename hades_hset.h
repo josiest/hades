@@ -77,8 +77,8 @@ Hades_HSet* Hades_NewHSet(Hades_SizeFunc, Hades_BiPredicate, Hades_Consumer);
 void Hades_FreeHSet(Hades_HSet*);
 
 /** defined in "hades_hset.h"
- * Hades_HSetNode* Hades_GetNodeFromHSet(const Hades_HSet* set,
- *                                       const void* item);
+ * Hades_HSetNode* Hades_GetHSetNode(const Hades_HSet* set,
+ *                                   const void* item);
  *  Get a node from a set.
  *
  * Parameters:
@@ -88,7 +88,7 @@ void Hades_FreeHSet(Hades_HSet*);
  * Postconditions:
  *  Returns null if item doesn't exist in set.
  */
-Hades_HSetNode* Hades_GetNodeFromHSet(const Hades_HSet*, const void*);
+Hades_HSetNode* Hades_GetHSetNode(const Hades_HSet*, const void*);
 
 /** defined in "hades_hset.h"
  * bool Hades_AddToHSet(Hades_HSet* set, const void* item, size_t size);
@@ -106,17 +106,17 @@ Hades_HSetNode* Hades_GetNodeFromHSet(const Hades_HSet*, const void*);
 bool Hades_AddToHSet(Hades_HSet* set, const void* item, size_t size);
 
 /** defined in "hades_hset.h"
- * bool Hades_HSetHasItem(const Hades_HSet* set, const void* item);
+ * bool Hades_HSetHas(const Hades_HSet* set, const void* item);
  *  Determine if item exists in set.
  *
  * Parameters:
  *   set - to check in
  *  item - to look for
  */
-bool Hades_HSetHasItem(const Hades_HSet*, const void*);
+bool Hades_HSetHas(const Hades_HSet*, const void*);
 
 /** defined in "hades_hset.h"
- * void* Hades_RmItemFromHSet(Hades_HSet* set, const void* item);
+ * bool Hades_RmFromHSet(Hades_HSet* set, const void* item);
  *  Remove item from set.
  *
  * Parameters:
@@ -124,9 +124,9 @@ bool Hades_HSetHasItem(const Hades_HSet*, const void*);
  *  item - to remove
  *
  * Postconditions:
- *  Returns null if item doesn't exist in set.
+ *  Returns false if item doesn't exist in set.
  */
-void* Hades_RmFromHSet(Hades_HSet*, const void*);
+bool Hades_RmFromHSet(Hades_HSet*, const void*);
 
 /** defined in "hades_hset.h"
  * Hades_Iter* Hades_IterHSet(const Hades_HSet* set);

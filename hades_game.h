@@ -1,7 +1,6 @@
 #ifndef HADES_GAME_H
 #define HADES_GAME_H
 
-#include "hades_stdhash.h"
 #include <SDL2/SDL.h>
 #include <stdbool.h>
 
@@ -41,8 +40,6 @@ struct Hades_Game {
 
     size_t next_objID;
     Hades_HMap* objs;
-    /*size_t objc;
-    Hades_ObjStruct* objs[Hades_MaxBuckets];*/
 
     size_t max_tpf;
     Hades_Timer* timer;

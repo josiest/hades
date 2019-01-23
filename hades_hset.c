@@ -40,11 +40,17 @@ void Hades_FreeHSet(Hades_HSet* set)
     free(set);
 }
 
-Hades_HSetNode* Hades_GetNodeFromHSet(const Hades_HSet* set, const void* item)
+Hades_HSetNode* Hades_GetHSetNode(const Hades_HSet* set, const void* item)
 {
     size_t i = set->HashItem(item) % Hades_MaxBuckets;
     Hades_HSetNode* node = set->buckets[i];
-    while (node && !set->ItemEq(item, node->item)) {
+    while (node != NULL) {
+        if (NULL == set->ItemEq) {
+            puts("ItemEq is null!");
+        }
+        if (set->ItemEq(item, node->item)) {
+            break;
+        }
         node = node->next;
     }
     return node;
@@ -53,19 +59,18 @@ Hades_HSetNode* Hades_GetNodeFromHSet(const Hades_HSet* set, const void* item)
 bool Hades_AddToHSet(Hades_HSet* set, const void* item, size_t size)
 {
     if (NULL == set) {
-        Hades_SetGameError("AddToHSet called with a null set");
+        puts("AddToHSet called with a null set");
         return false;
     }
-    Hades_HSetNode* node = Hades_GetNodeFromHSet(set, item);
-    if (node) {
+    if (Hades_GetHSetNode(set, item) != NULL) {
         return false;
     }
-    size_t i = set->HashItem(item) % Hades_MaxBuckets;
+    const size_t i = set->HashItem(item) % Hades_MaxBuckets;
     Hades_HSetNode nodecpy = {malloc(size), NULL, set->buckets[i]};
     if (nodecpy.item != NULL) {
-        memcpy(&nodecpy.item, item, size);
+        memcpy(nodecpy.item, item, size);
     } else {
-        Hades_SetGameError("Ran out of memory when adding to a set");
+        puts("Ran out of memory when adding to a set");
         return false;
     }
     set->buckets[i] = (Hades_HSetNode*) malloc(sizeof(Hades_HSetNode));
@@ -73,32 +78,32 @@ bool Hades_AddToHSet(Hades_HSet* set, const void* item, size_t size)
         memcpy(set->buckets[i], &nodecpy, sizeof(Hades_HSetNode));
         set->size += 1;
     } else {
-        Hades_SetGameError("Ran out of memory when creating a set");
+        puts("Ran out of memory when creating a set");
         set->buckets[i] = nodecpy.next;
         return false;
     }
     return true;
 }
 
-bool Hades_HSetHasItem(const Hades_HSet* set, const void* item)
+bool Hades_HSetHas(const Hades_HSet* set, const void* item)
 {
     if (NULL == set) {
-        Hades_SetGameError("HSetHasItem called with null set");
+        puts("HSetHasItem called with null set");
         return false;
     }
-    Hades_HSetNode* node = Hades_GetNodeFromHSet(set, item);
+    Hades_HSetNode* node = Hades_GetHSetNode(set, item);
     return node != NULL;
 }
 
-void* Hades_RmFromHSet(Hades_HSet* set, const void* key)
+bool Hades_RmFromHSet(Hades_HSet* set, const void* key)
 {
     if (NULL == set) {
-        Hades_SetGameError("RmFromHSet called with null set");
-        return NULL;
+        puts("RmFromHSet called with null set");
+        return false;
     }
-    Hades_HSetNode* node = Hades_GetNodeFromHSet(set, key);
+    Hades_HSetNode* node = Hades_GetHSetNode(set, key);
     if (!node) {
-        return NULL;
+        return false;
     }
     if (node->prev) {
         node->prev->next = node->next;
@@ -108,10 +113,10 @@ void* Hades_RmFromHSet(Hades_HSet* set, const void* key)
     if (node->next) {
         node->next->prev = node->prev;
     }
-    void* item = node->item;
+    set->FreeItem(node->item);
     free(node);
     set->size -= 1;
-    return item;
+    return true;
 }
 
 Hades_Iter* Hades_IterHSet(const Hades_HSet* set)
